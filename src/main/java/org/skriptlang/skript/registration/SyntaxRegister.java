@@ -18,34 +18,68 @@
  */
 package org.skriptlang.skript.registration;
 
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Unmodifiable;
+import com.google.common.collect.ImmutableSet;
+import org.skriptlang.skript.registration.util.SyntaxPriority;
+import org.skriptlang.skript.util.Priority;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * A syntax register is a collection of registered {@link SyntaxInfo}s of a common type.
  * @param <I> The type of syntax in this register.
  */
-@ApiStatus.Experimental
-interface SyntaxRegister<I extends SyntaxInfo<?>> {
+final class SyntaxRegister<I extends SyntaxInfo<?>> {
 
-	/**
-	 * @return An unmodifiable snapshot of all syntaxes this register contains.
-	 */
-	@Unmodifiable
-	Collection<I> syntaxes();
+	private static final Comparator<SyntaxInfo<?>> SET_COMPARATOR = (a,b) -> {
+		if (a == b) { // only considered equal if registering the same infos
+			return 0;
+		}
 
-	/**
-	 * Adds a new syntax info to this register.
-	 * @param info The syntax info to add.
-	 */
-	void add(I info);
+		Priority aPriority = a.priority();
+		Priority bPriority = b.priority();
 
-	/**
-	 * Removes a syntax info from this register.
-	 * @param info The syntax info to remove.
-	 */
-	void remove(I info);
+		if (aPriority instanceof SyntaxPriority) {
+			SyntaxPriority priority = (SyntaxPriority) aPriority;
+			if (priority.beforeElements().contains(b.type())) { // a must be before b
+				return -1;
+			}
+			// TODO improve: not ideal, but we just stick it at the end to make sure it comes after everything
+			return 1;
+		}
+
+		if (bPriority instanceof SyntaxPriority) {
+			SyntaxPriority priority = (SyntaxPriority) bPriority;
+			if (priority.afterElements().contains(a.type())) { // b must be after a
+				return -1; // returning that a must be before b
+			}
+			// a does not have a relationship with b, allow it to keep moving up
+			return 1;
+		}
+
+		// if not a special SyntaxPriority case, refer to default behavior
+
+		int result = aPriority.compareTo(bPriority);
+		// when elements have the same priority, the oldest element comes first
+		return result != 0 ? result : 1;
+	};
+
+	private final Set<I> syntaxes = new ConcurrentSkipListSet<>(SET_COMPARATOR);
+
+	public Collection<I> syntaxes() {
+		synchronized (syntaxes) {
+			return ImmutableSet.copyOf(syntaxes);
+		}
+	}
+
+	public void add(I info) {
+		syntaxes.add(info);
+	}
+
+	public void remove(I info) {
+		syntaxes.remove(info);
+	}
 
 }

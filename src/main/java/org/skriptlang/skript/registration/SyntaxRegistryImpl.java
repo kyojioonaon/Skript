@@ -52,7 +52,7 @@ final class SyntaxRegistryImpl implements SyntaxRegistry {
 
 	@SuppressWarnings("unchecked")
 	private <I extends SyntaxInfo<?>> SyntaxRegister<I> register(Key<I> key) {
-		return (SyntaxRegister<I>) registers.computeIfAbsent(key, k -> new SyntaxRegisterImpl<>());
+		return (SyntaxRegister<I>) registers.computeIfAbsent(key, k -> new SyntaxRegister<>());
 	}
 
 	static final class ChildSyntaxRegistryImpl implements ChildSyntaxRegistry {
