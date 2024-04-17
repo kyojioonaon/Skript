@@ -50,6 +50,11 @@ class SkriptAddonImpl {
 			return unmodifiableLocalizer;
 		}
 
+		@Override
+		public void loadModules(AddonModule... modules) {
+			throw new UnsupportedOperationException("Modules cannot be loaded with an unmodifiable addon.");
+		}
+
 	}
 
 }

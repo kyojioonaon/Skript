@@ -91,6 +91,7 @@ public interface SyntaxRegistry {
 	}
 
 	/**
+	 * A method to obtain all syntaxes registered under a certain key.
 	 * @param key The key to obtain syntaxes from.
 	 * @return An unmodifiable snapshot of all syntaxes registered under <code>key</code>.
 	 * @param <I> The syntax type.
@@ -100,7 +101,6 @@ public interface SyntaxRegistry {
 
 	/**
 	 * Registers a new syntax under a provided key.
-	 *
 	 * @param key The key to register <code>info</code> under.
 	 * @param info The syntax info to register.
 	 * @param <I> The syntax type.
@@ -109,7 +109,6 @@ public interface SyntaxRegistry {
 
 	/**
 	 * Unregisters a syntax registered under a provided key.
-	 *
 	 * @param key The key the <code>info</code> is registered under.
 	 * @param info The syntax info to unregister.
 	 * @param <I> The syntax type.

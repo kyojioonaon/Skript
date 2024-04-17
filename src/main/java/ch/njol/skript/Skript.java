@@ -113,7 +113,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.junit.After;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import org.skriptlang.skript.addon.AddonModule;
 import org.skriptlang.skript.bukkit.registration.BukkitRegistryKeys;
 import org.skriptlang.skript.bukkit.registration.BukkitInfos;
 import org.skriptlang.skript.lang.comparator.Comparator;
@@ -1344,7 +1343,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 * and adding new strings to Skript's localization system (e.g. the required "types.[type]" strings for registered classes).
 	 * 
 	 * @param plugin The plugin
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registerAddon(String, AddonModule...)}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#registerAddon(String)}
 	 */
 	@Deprecated
 	public static SkriptAddon registerAddon(JavaPlugin plugin) {

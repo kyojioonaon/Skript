@@ -27,7 +27,7 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 
 /**
  * A Skript addon is an extension to Skript that expands its features.
- * Typically, an addon instance may be obtained through {@link Skript#registerAddon(String, AddonModule...)}.
+ * Typically, an addon instance may be obtained through {@link Skript#registerAddon(String)}.
  */
 @ApiStatus.Experimental
 public interface SkriptAddon {

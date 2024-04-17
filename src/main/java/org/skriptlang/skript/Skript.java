@@ -22,10 +22,7 @@ import ch.njol.util.NonNullPair;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jetbrains.annotations.UnmodifiableView;
-import org.skriptlang.skript.addon.AddonModule;
 import org.skriptlang.skript.addon.SkriptAddon;
-import org.skriptlang.skript.registration.SyntaxRegistry;
 
 import java.util.Collection;
 
@@ -37,20 +34,17 @@ public interface Skript extends SkriptAddon {
 
 	/**
 	 * This implementation makes use of default implementations of required classes.
+	 * Note that the default implementation is designed to prevent users from interacting directly with its addon components.
+	 * That is, something like <code>skript.registry()</code> will return an unmodifiable view of the registry.
+	 * As a result, this method also returns the modifiable addon backing the implementation.
 	 * @param name The name for this Skript instance to use.
-	 * @return A pair containing a default Skript implementation and the modifiable {@link SkriptAddon} backing it.
+	 * @return A pair containing a default Skript implementation and the modifiable addon backing it.
 	 */
 	@Contract("_ -> new")
 	static NonNullPair<Skript, SkriptAddon> createInstance(String name) {
 		SkriptImpl skript = new SkriptImpl(name);
 		return new NonNullPair<>(skript, skript.addon);
 	}
-
-	/**
-	 * @return An unmodifiable view of the syntax registry containing all syntax registered by this Skript and its addons.
-	 */
-	@UnmodifiableView
-	SyntaxRegistry registry();
 
 	/**
 	 * Registers the provided addon with this Skript and loads the provided modules.
@@ -61,6 +55,7 @@ public interface Skript extends SkriptAddon {
 
 	/**
 	 * @return An unmodifiable snapshot of addons currently registered with this Skript.
+	 * It is not guaranteed that the individual addons will be modifiable (see {@link SkriptAddon#unmodifiableView(SkriptAddon)}).
 	 */
 	@Unmodifiable
 	Collection<SkriptAddon> addons();

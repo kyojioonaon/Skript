@@ -92,6 +92,11 @@ final class SkriptImpl implements Skript {
 		return unmodifiableAddon.localizer();
 	}
 
+	@Override
+	public void loadModules(AddonModule... modules) {
+		unmodifiableAddon.loadModules(modules);
+	}
+
 	private static final class SkriptAddonImpl implements SkriptAddon {
 
 		private final String name;
