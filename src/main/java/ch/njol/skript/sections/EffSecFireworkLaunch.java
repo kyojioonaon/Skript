@@ -135,19 +135,19 @@ public class EffSecFireworkLaunch extends EffectSection {
 	@Nullable
 	protected TriggerItem walk(Event event) {
 		FireworkEffect[] effects = this.effects.getArray(event);
-		Object localVars = Variables.copyLocalVariables(event);
+		// Uses org.bukkit consumer for older versions support. If newer, bukkit maps this class to java utils.
 		Consumer<Firework> consumer = null;
 		if (trigger != null) {
 			consumer = firework -> {
 				FireworkSectionLaunchEvent fireworkLaunchEvent = new FireworkSectionLaunchEvent(firework);
-				Variables.setLocalVariables(fireworkLaunchEvent, localVars);
+				Variables.setLocalVariables(fireworkLaunchEvent, Variables.copyLocalVariables(event));
 				trigger.execute(fireworkLaunchEvent);
-				Variables.setLocalVariables(event, localVars);
+				Variables.setLocalVariables(event, Variables.copyLocalVariables(fireworkLaunchEvent));
+				Variables.removeLocals(fireworkLaunchEvent);
 			};
 		}
 
 		int power = this.power != null ? this.power.getOptionalSingle(event).orElse(1).intValue() : 1;
-
 		for (Location location : locations.getArray(event)) {
 			World world = location.getWorld();
 			if (world == null)
