@@ -18,14 +18,6 @@
  */
 package ch.njol.skript.expressions;
 
-import org.bukkit.damage.DamageSource;
-import org.bukkit.damage.DamageType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.HealthUtils;
 import ch.njol.skript.classes.Changer.ChangeMode;
@@ -41,17 +33,27 @@ import ch.njol.skript.util.Getter;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
+import org.bukkit.damage.DamageType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.eclipse.jdt.annotation.Nullable;
+
 @Name("Last Damage Cause/Type")
 @Description({
 	"Cause of last damage done to an entity.",
 	"Using 'damage type' is more accurate as it includes data pack types, but it is only available on versions 1.20.4 and newer."
 })
 @Examples({
-	"set last damage cause of event-entity to fire tick"
+	"set last damage cause of event-entity to fire tick",
+	"set last damage type of event-entity to wither"
 })
 @RequiredPlugins("Spigot 1.20.4+ for damage type")
 @Since("2.2-Fixes-V10")
 public class ExprLastDamageCause extends PropertyExpression<LivingEntity, Object> {
+
+	private static final boolean DAMAGE_TYPE = Skript.classExists("org.bukkit.damage.DamageType");
 
 	static {
 		register(ExprLastDamageCause.class, Object.class, "last damage (cause|reason|:type)", "livingentities");
@@ -74,11 +76,11 @@ public class ExprLastDamageCause extends PropertyExpression<LivingEntity, Object
 			public Object get(LivingEntity entity) {
 				EntityDamageEvent damageEvent = entity.getLastDamageCause();
 				if (damageEvent == null) {
-					if (type)
+					if (type && DAMAGE_TYPE)
 						return DamageType.GENERIC;
 					return DamageCause.CUSTOM;
 				}
-				if (type)
+				if (type && DAMAGE_TYPE)
 					return damageEvent.getDamageSource().getDamageType();
 				return damageEvent.getCause();
 			}
@@ -121,12 +123,12 @@ public class ExprLastDamageCause extends PropertyExpression<LivingEntity, Object
 
 	@Override
 	public Class<?> getReturnType() {
-		return type ? DamageType.class : DamageCause.class;
+		return type && DAMAGE_TYPE ? DamageType.class : DamageCause.class;
 	}
 
 	@Override
 	public String toString(@Nullable Event event, boolean debug) {
-		if (type)			
+		if (type && DAMAGE_TYPE)			
 			return "damage type " + getExpr().toString(event, debug);
 		return "damage cause " + getExpr().toString(event, debug);
 	}
