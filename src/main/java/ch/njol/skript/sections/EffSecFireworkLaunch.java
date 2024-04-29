@@ -20,6 +20,7 @@
 package ch.njol.skript.sections;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -29,7 +30,6 @@ import org.bukkit.entity.Firework;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.util.Consumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +39,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import ch.njol.skript.entity.EntityData;
 import ch.njol.skript.lang.EffectSection;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
@@ -152,7 +153,8 @@ public class EffSecFireworkLaunch extends EffectSection {
 			World world = location.getWorld();
 			if (world == null)
 				continue;
-			Firework firework = world.spawn(location, Firework.class, consumer);
+			@SuppressWarnings("deprecation")
+			Firework firework = EntityData.spawn(location, Firework.class, consumer);
 			FireworkMeta meta = firework.getFireworkMeta();
 			meta.addEffects(effects);
 			meta.setPower(power);
