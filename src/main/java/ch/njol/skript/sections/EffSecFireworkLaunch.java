@@ -142,7 +142,7 @@ public class EffSecFireworkLaunch extends EffectSection {
 			consumer = firework -> {
 				FireworkSectionLaunchEvent fireworkLaunchEvent = new FireworkSectionLaunchEvent(firework);
 				Variables.setLocalVariables(fireworkLaunchEvent, Variables.copyLocalVariables(event));
-				trigger.execute(fireworkLaunchEvent);
+				TriggerItem.walk(trigger, fireworkLaunchEvent);
 				Variables.setLocalVariables(event, Variables.copyLocalVariables(fireworkLaunchEvent));
 				Variables.removeLocals(fireworkLaunchEvent);
 			};
