@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -54,7 +55,6 @@ import ch.njol.skript.effects.EffTeleport;
 import ch.njol.skript.localization.Language;
 import ch.njol.skript.localization.LanguageChangeListener;
 import ch.njol.skript.registrations.Classes;
-import ch.njol.util.Callback;
 import ch.njol.util.Checker;
 import ch.njol.util.NonNullPair;
 import ch.njol.util.Pair;
@@ -575,9 +575,9 @@ public abstract class Utils {
 	public static String replaceChatStyles(final String message) {
 		if (message.isEmpty())
 			return message;
-		String m = StringUtils.replaceAll(Matcher.quoteReplacement("" + message.replace("<<none>>", "")), stylePattern, new Callback<String, Matcher>() {
+		String m = StringUtils.replaceAll(Matcher.quoteReplacement("" + message.replace("<<none>>", "")), stylePattern, new Function<Matcher, String>() {
 			@Override
-			public String run(final Matcher m) {
+			public String apply(final Matcher m) {
 				SkriptColor color = SkriptColor.fromName("" + m.group(1));
 				if (color != null)
 					return color.getFormattedChat();
@@ -613,9 +613,9 @@ public abstract class Utils {
 	public static String replaceEnglishChatStyles(final String message) {
 		if (message.isEmpty())
 			return message;
-		String m = StringUtils.replaceAll(Matcher.quoteReplacement(message), stylePattern, new Callback<String, Matcher>() {
+		String m = StringUtils.replaceAll(Matcher.quoteReplacement(message), stylePattern, new Function<Matcher, String>() {
 			@Override
-			public String run(final Matcher m) {
+			public String apply(final Matcher m) {
 				SkriptColor color = SkriptColor.fromName("" + m.group(1));
 				if (color != null)
 					return color.getFormattedChat();
