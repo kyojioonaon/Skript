@@ -64,14 +64,13 @@ abstract class Keyword {
 	private static Keyword[] buildKeywords(PatternElement first, boolean starting, int depth) {
 		List<Keyword> keywords = new ArrayList<>();
 		PatternElement next = first;
-		boolean ending = next.next == null; // whether it is the end of the pattern
 		while (next != null) {
 			if (next instanceof LiteralPatternElement) { // simple literal strings are keywords
 				String literal = next.toString().trim();
 				while (literal.contains("  "))
 					literal = literal.replace("  ", " ");
 				if (!literal.isEmpty()) // empty string is not useful
-					keywords.add(new SimpleKeyword(literal, starting, ending));
+					keywords.add(new SimpleKeyword(literal, starting, next.next == null));
 			} else if (depth <= 1 && next instanceof ChoicePatternElement) { // attempt to build keywords from choices
 				final boolean finalStarting = starting;
 				final int finalDepth = depth;
