@@ -18,23 +18,15 @@
  */
 package ch.njol.skript.expressions;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
-import org.eclipse.jdt.annotation.Nullable;
-
-import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Events;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.SkriptParser.ParseResult;
-import ch.njol.skript.lang.util.SimpleExpression;
+import ch.njol.skript.expressions.base.EventValueExpression;
 import ch.njol.skript.registrations.EventValues;
-import ch.njol.util.Kleenean;
+
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 
 @Name("Heal Reason")
 @Description("The <a href='./classes.html#healreason'>heal reason</a> of a <a href='./events.html#heal'>heal event</a>.")
@@ -45,27 +37,14 @@ import ch.njol.util.Kleenean;
 })
 @Events("heal")
 @Since("2.5")
-public class ExprHealReason extends SimpleExpression<RegainReason> {
+public class ExprHealReason extends EventValueExpression<RegainReason> {
 
 	static {
-		Skript.registerExpression(ExprHealReason.class, RegainReason.class, ExpressionType.SIMPLE, "(regen|health regain|heal[ing]) (reason|cause)");
+		register(ExprHealReason.class, RegainReason.class, "(regen|health regain|heal[ing]) (reason|cause)");
 	}
 
-	@Override
-	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
-		if (!getParser().isCurrentEvent(EntityRegainHealthEvent.class)) {
-			Skript.error("The expression 'heal reason' may only be used in a healing event");
-			return false;
-		}
-		return true;
-	}
-
-	@Nullable
-	@Override
-	protected RegainReason[] get(Event event) {
-		if (!(event instanceof EntityRegainHealthEvent))
-			return null;
-		return new RegainReason[]{((EntityRegainHealthEvent) event).getRegainReason()};
+	public ExprHealReason() {
+		super(RegainReason.class);
 	}
 
 	@Override
@@ -73,21 +52,6 @@ public class ExprHealReason extends SimpleExpression<RegainReason> {
 		if (time == EventValues.TIME_FUTURE)
 			return false;
 		return super.setTime(time);
-	}
-
-	@Override
-	public boolean isSingle() {
-		return true;
-	}
-
-	@Override
-	public Class<? extends RegainReason> getReturnType() {
-		return RegainReason.class;
-	}
-
-	@Override
-	public String toString(@Nullable Event event, boolean debug) {
-		return "heal reason";
 	}
 
 }
