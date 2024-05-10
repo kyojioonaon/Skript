@@ -47,8 +47,7 @@ public class EffSendBlockChange extends Effect {
 	static {
 		Skript.registerEffect(EffSendBlockChange.class,
 				"make %players% see %blocks% as %itemtype/blockdata%",
-				"make %players% see %blocks% (as normal|the same as the server)",
-				"(reset|sync) %blocks% (for|to) %players% [with the server]");
+				"make %players% see %blocks% (as normal|the same as the server)");
 	}
 
 	@Nullable
@@ -56,23 +55,13 @@ public class EffSendBlockChange extends Effect {
 	private Expression<Block> blocks;
 	private Expression<Player> players;
 
-	private boolean reset;
-
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
-		switch (matchedPattern) {
-			case 0:
-				as = (Expression<Object>) exprs[2];
-			case 1:
-				players = (Expression<Player>) exprs[0];
-				blocks = (Expression<Block>) exprs[1];
-				break;
-			case 2:
-				blocks = (Expression<Block>) exprs[0];
-				players = (Expression<Player>) exprs[1];
-				reset = true;
-		}
+		players = (Expression<Player>) exprs[0];
+		blocks = (Expression<Block>) exprs[1];
+		if (matchedPattern == 1)
+			as = (Expression<Object>) exprs[2];
 		return true;
 	}
 
@@ -110,11 +99,6 @@ public class EffSendBlockChange extends Effect {
 
 	@Override
 	public String toString(@Nullable Event event, boolean debug) {
-		if (reset)
-			return String.format("reset %s for %s with the server",
-					blocks.toString(event, debug),
-					players.toString(event, debug)
-			);
 		if (as == null)
 			return String.format("make %s see %s as normal",
 					players.toString(event, debug),
