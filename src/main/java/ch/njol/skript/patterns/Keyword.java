@@ -82,7 +82,7 @@ abstract class Keyword {
 				if (choices.stream().noneMatch(Collection::isEmpty)) // each choice must have a keyword for this to work
 					keywords.add(new ChoiceKeyword(choices)); // a keyword where only one choice much
 			} else if (next instanceof GroupPatternElement) { // add in keywords from the group
-				Collections.addAll(keywords, buildKeywords(((GroupPatternElement) next).getPatternElement(), starting, depth++));
+				Collections.addAll(keywords, buildKeywords(((GroupPatternElement) next).getPatternElement(), starting, depth + 1));
 			}
 
 			// a parse tag does not represent actual content in a pattern, therefore it should not affect starting
