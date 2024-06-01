@@ -273,7 +273,18 @@ public final class BukkitInfos {
 			 */
 			@Override
 			@Contract("_ -> fail")
-			B entryValidator(EntryValidator entryValidator);
+			default B entryValidator(EntryValidator entryValidator) {
+				throw new UnsupportedOperationException("Event SyntaxInfos cannot have an EntryValidator");
+			}
+
+			/**
+			 * @throws UnsupportedOperationException This method is not supported for {@link SkriptEvent} syntax infos.
+			 */
+			@Override
+			@Contract("_ -> fail")
+			default B simple(boolean simple) {
+				throw new UnsupportedOperationException("Event SyntaxInfos cannot be simple");
+			}
 
 			/**
 			 * {@inheritDoc}

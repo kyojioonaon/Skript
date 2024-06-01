@@ -97,6 +97,11 @@ interface DefaultSyntaxInfos {
 		EntryValidator entryValidator();
 
 		/**
+		 * @return Whether the Structure is represented by a {@link ch.njol.skript.config.SimpleNode}.
+		 */
+		boolean isSimple();
+
+		/**
 		 * A Structure-specific builder is used for constructing a new Structure syntax info.
 		 * @see #builder(Class)
 		 * @param <B> The type of builder being used.
@@ -112,6 +117,14 @@ interface DefaultSyntaxInfos {
 			 */
 			@Contract("_ -> this")
 			B entryValidator(EntryValidator entryValidator);
+
+			/**
+			 * Sets whether this Structure is simple.
+			 * That is, whether it is represented by a {@link ch.njol.skript.config.SimpleNode}.
+			 * @return This builder.
+			 * @see Structure#isSimple()
+			 */
+			B simple(boolean simple);
 
 			/**
 			 * {@inheritDoc}

@@ -423,8 +423,6 @@ public final class Skript extends JavaPlugin implements Listener {
 		} catch (Exception e) {
 			Skript.exception(e, "Update checker could not be initialized.");
 		}
-		experimentRegistry = new ExperimentRegistry(this);
-		Feature.registerAll(getAddonInstance(), experimentRegistry);
 
 		if (!getDataFolder().isDirectory())
 			getDataFolder().mkdirs();
@@ -511,6 +509,9 @@ public final class Skript extends JavaPlugin implements Listener {
 		);
 		// initialize the old Skript SkriptAddon instance
 		getAddonInstance();
+
+		experimentRegistry = new ExperimentRegistry(this);
+		Feature.registerAll(getAddonInstance(), experimentRegistry);
 
 		// Load classes which are always safe to use
 		new JavaClasses(); // These may be needed in configuration
@@ -1679,6 +1680,19 @@ public final class Skript extends JavaPlugin implements Listener {
 				.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(structureClass)))
 				.addPatterns(patterns)
 				.build()
+		);
+	}
+
+	/**
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 */
+	public static <E extends Structure> void registerSimpleStructure(Class<E> structureClass, String... patterns) {
+		checkAcceptRegistrations();
+		skriptRegistry.register(SyntaxRegistry.STRUCTURE, SyntaxInfo.Structure.builder(structureClass)
+			.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(structureClass)))
+			.addPatterns(patterns)
+			.simple(true)
+			.build()
 		);
 	}
 

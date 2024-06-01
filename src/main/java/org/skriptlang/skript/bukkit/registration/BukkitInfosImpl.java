@@ -181,6 +181,11 @@ final class BukkitInfosImpl {
 			return null;
 		}
 
+		@Override
+		public boolean isSimple() {
+			return false;
+		}
+
 		@SuppressWarnings("unchecked")
 		static final class BuilderImpl<B extends Event.Builder<B, E>, E extends SkriptEvent> implements Event.Builder<B, E> {
 
@@ -301,11 +306,6 @@ final class BukkitInfosImpl {
 			public B addEvents(Collection<Class<? extends org.bukkit.event.Event>> events) {
 				this.events.addAll(events);
 				return (B) this;
-			}
-
-			@Override
-			public B entryValidator(EntryValidator entryValidator) {
-				throw new UnsupportedOperationException("entryValidator cannot be set for Event SyntaxInfos");
 			}
 
 			@Override

@@ -43,7 +43,7 @@ final class DefaultSyntaxInfosImpl {
 		) {
 			super(origin, type, supplier, patterns, priority);
 			if (returnType.isAnnotation() || returnType.isArray() || returnType.isPrimitive()) {
-				throw new IllegalArgumentException("returnType must be a normal type");
+				throw new IllegalArgumentException("The return type of an Expression must be a normal type");
 			}
 			this.returnType = returnType;
 		}
@@ -107,19 +107,29 @@ final class DefaultSyntaxInfosImpl {
 
 		@Nullable
 		private final EntryValidator entryValidator;
+		private final boolean simple;
 
 		StructureImpl(
 			SyntaxOrigin origin, Class<E> type, @Nullable Supplier<E> supplier,
-			Collection<String> patterns, Priority priority, @Nullable EntryValidator entryValidator
+			Collection<String> patterns, Priority priority,
+			@Nullable EntryValidator entryValidator, boolean simple
 		) {
 			super(origin, type, supplier, patterns, priority);
+			if (simple && entryValidator != null)
+				throw new IllegalArgumentException("Simple Structures cannot have an EntryValidator");
 			this.entryValidator = entryValidator;
+			this.simple = simple;
 		}
 
 		@Override
 		@Nullable
 		public EntryValidator entryValidator() {
 			return entryValidator;
+		}
+
+		@Override
+		public boolean isSimple() {
+			return simple;
 		}
 
 		@Override
@@ -156,6 +166,7 @@ final class DefaultSyntaxInfosImpl {
 
 			@Nullable
 			private EntryValidator entryValidator;
+			private boolean simple;
 
 			BuilderImpl(Class<E> structureClass) {
 				super(structureClass);
@@ -167,8 +178,14 @@ final class DefaultSyntaxInfosImpl {
 				return (B) this;
 			}
 
+			@Override
+			public B simple(boolean simple) {
+				this.simple = simple;
+				return (B) this;
+			}
+
 			public Structure<E> build() {
-				return new StructureImpl<>(origin, type, supplier, patterns, priority, entryValidator);
+				return new StructureImpl<>(origin, type, supplier, patterns, priority, entryValidator, simple);
 			}
 
 		}
