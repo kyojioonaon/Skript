@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.skriptlang.skript.lang.structure.Structure;
+import org.skriptlang.skript.util.Registry;
 
 import java.util.Collection;
 
@@ -35,7 +36,7 @@ import java.util.Collection;
  * A syntax registry manages all {@link SyntaxRegister}s for syntax registration.
  */
 @ApiStatus.Experimental
-public interface SyntaxRegistry {
+public interface SyntaxRegistry extends Registry<SyntaxInfo<?>> {
 
 	/**
 	 * A key representing the built-in {@link Structure} syntax element.
@@ -89,6 +90,14 @@ public interface SyntaxRegistry {
 	static SyntaxRegistry unmodifiableView(SyntaxRegistry registry) {
 		return new SyntaxRegistryImpl.UnmodifiableRegistry(registry);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * @return An unmodifiable snapshot of all syntaxes registered.
+	 */
+	@Override
+	@Unmodifiable
+	Collection<SyntaxInfo<?>> elements();
 
 	/**
 	 * A method to obtain all syntaxes registered under a certain key.

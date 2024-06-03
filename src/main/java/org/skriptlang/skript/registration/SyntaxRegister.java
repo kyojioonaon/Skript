@@ -66,7 +66,7 @@ final class SyntaxRegister<I extends SyntaxInfo<?>> {
 		return result != 0 ? result : 1;
 	};
 
-	private final Set<I> syntaxes = new ConcurrentSkipListSet<>(SET_COMPARATOR);
+	final Set<I> syntaxes = new ConcurrentSkipListSet<>(SET_COMPARATOR);
 
 	public Collection<I> syntaxes() {
 		synchronized (syntaxes) {

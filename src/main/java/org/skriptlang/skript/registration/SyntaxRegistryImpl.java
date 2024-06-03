@@ -18,6 +18,7 @@
  */
 package org.skriptlang.skript.registration;
 
+import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collection;
@@ -55,6 +56,17 @@ final class SyntaxRegistryImpl implements SyntaxRegistry {
 		return (SyntaxRegister<I>) registers.computeIfAbsent(key, k -> new SyntaxRegister<>());
 	}
 
+	@Override
+	public Collection<SyntaxInfo<?>> elements() {
+		ImmutableSet.Builder<SyntaxInfo<?>> builder = ImmutableSet.builder();
+		registers.values().forEach(register -> {
+			synchronized (register.syntaxes) {
+				builder.addAll(register.syntaxes);
+			}
+		});
+		return builder.build();
+	}
+
 	static final class ChildSyntaxRegistryImpl implements ChildSyntaxRegistry {
 
 		private final SyntaxRegistry parent;
@@ -63,6 +75,12 @@ final class SyntaxRegistryImpl implements SyntaxRegistry {
 		ChildSyntaxRegistryImpl(SyntaxRegistry parent, SyntaxRegistry child) {
 			this.parent = parent;
 			this.child = child;
+		}
+
+		@Override
+		@Unmodifiable
+		public Collection<SyntaxInfo<?>> elements() {
+			return child.elements();
 		}
 
 		@Override
@@ -96,6 +114,12 @@ final class SyntaxRegistryImpl implements SyntaxRegistry {
 
 		UnmodifiableRegistry(SyntaxRegistry registry) {
 			this.registry = registry;
+		}
+
+		@Override
+		@Unmodifiable
+		public Collection<SyntaxInfo<?>> elements() {
+			return registry.elements();
 		}
 
 		@Override
