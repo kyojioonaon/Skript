@@ -107,18 +107,18 @@ final class DefaultSyntaxInfosImpl {
 
 		@Nullable
 		private final EntryValidator entryValidator;
-		private final boolean simple;
+		private final NodeType nodeType;
 
 		StructureImpl(
 			SyntaxOrigin origin, Class<E> type, @Nullable Supplier<E> supplier,
 			Collection<String> patterns, Priority priority,
-			@Nullable EntryValidator entryValidator, boolean simple
+			@Nullable EntryValidator entryValidator, NodeType nodeType
 		) {
 			super(origin, type, supplier, patterns, priority);
-			if (simple && entryValidator != null)
+			if (!nodeType.canBeSection() && entryValidator != null)
 				throw new IllegalArgumentException("Simple Structures cannot have an EntryValidator");
 			this.entryValidator = entryValidator;
-			this.simple = simple;
+			this.nodeType = nodeType;
 		}
 
 		@Override
@@ -128,8 +128,8 @@ final class DefaultSyntaxInfosImpl {
 		}
 
 		@Override
-		public boolean isSimple() {
-			return simple;
+		public NodeType nodeType() {
+			return nodeType;
 		}
 
 		@Override
@@ -166,7 +166,7 @@ final class DefaultSyntaxInfosImpl {
 
 			@Nullable
 			private EntryValidator entryValidator;
-			private boolean simple;
+			private NodeType nodeType = NodeType.SECTION;
 
 			BuilderImpl(Class<E> structureClass) {
 				super(structureClass);
@@ -179,13 +179,13 @@ final class DefaultSyntaxInfosImpl {
 			}
 
 			@Override
-			public B simple(boolean simple) {
-				this.simple = simple;
+			public B nodeType(NodeType nodeType) {
+				this.nodeType = nodeType;
 				return (B) this;
 			}
 
 			public Structure<E> build() {
-				return new StructureImpl<>(origin, type, supplier, patterns, priority, entryValidator, simple);
+				return new StructureImpl<>(origin, type, supplier, patterns, priority, entryValidator, nodeType);
 			}
 
 		}

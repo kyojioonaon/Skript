@@ -105,11 +105,8 @@ public class SyntaxElementInfo<E extends SyntaxElement> {
 			return (I) eventInfo;
 		} else if (info instanceof SyntaxInfo.Structure) {
 			SyntaxInfo.Structure<?> structure = (SyntaxInfo.Structure<?>) info;
-			if (structure.isSimple())
-				return (I) new StructureInfo<>(structure.patterns().toArray(new String[0]), structure.type(),
-					structure.origin().name(), true);
 			return (I) new StructureInfo<>(structure.patterns().toArray(new String[0]), structure.type(),
-					structure.origin().name(), structure.entryValidator());
+					structure.origin().name(), structure.entryValidator(), structure.nodeType());
 		} else if (info instanceof SyntaxInfo.Expression) {
 			return (I) fromModernExpression((SyntaxInfo.Expression<?, ?>) info);
 		}

@@ -79,6 +79,43 @@ interface DefaultSyntaxInfos {
 	interface Structure<E extends org.skriptlang.skript.lang.structure.Structure> extends SyntaxInfo<E> {
 
 		/**
+		 * Represents type of {@link ch.njol.skript.config.Node}s that can represent a Structure.
+		 */
+		enum NodeType {
+
+			/**
+			 * For Structures that can be represented using a {@link ch.njol.skript.config.SimpleNode}.
+			 */
+			SIMPLE,
+
+			/**
+			 * For Structures that can be represented using a {@link ch.njol.skript.config.SectionNode}.
+			 */
+			SECTION,
+
+			/**
+			 * For Structures that can be represented using a
+			 *  {@link ch.njol.skript.config.SimpleNode} or {@link ch.njol.skript.config.SectionNode}.
+			 */
+			BOTH;
+
+			/**
+			 * @return Whether a Structure of this type can be represented using a {@link ch.njol.skript.config.SimpleNode}.
+			 */
+			public boolean canBeSimple() {
+				return this != SECTION;
+			}
+
+			/**
+			 * @return Whether a Structure of this type can be represented using a {@link ch.njol.skript.config.SectionNode}.
+			 */
+			public boolean canBeSection() {
+				return this != SIMPLE;
+			}
+
+		}
+
+		/**
 		 * Constructs a builder for a structure syntax info.
 		 * @param structureClass The Structure class the info will represent.
 		 * @return A Structure-specific builder for creating a syntax info representing <code>type</code>.
@@ -97,9 +134,9 @@ interface DefaultSyntaxInfos {
 		EntryValidator entryValidator();
 
 		/**
-		 * @return Whether the Structure is represented by a {@link ch.njol.skript.config.SimpleNode}.
+		 * @return The type of {@link ch.njol.skript.config.Node}s that can represent the Structure.
 		 */
-		boolean isSimple();
+		NodeType nodeType();
 
 		/**
 		 * A Structure-specific builder is used for constructing a new Structure syntax info.
@@ -119,12 +156,12 @@ interface DefaultSyntaxInfos {
 			B entryValidator(EntryValidator entryValidator);
 
 			/**
-			 * Sets whether this Structure is simple.
-			 * That is, whether it is represented by a {@link ch.njol.skript.config.SimpleNode}.
+			 * Sets the type of {@link ch.njol.skript.config.Node}s that can represent the Structure.
+			 * By default, this is typically {@link NodeType#SECTION}.
 			 * @return This builder.
-			 * @see Structure#isSimple()
+			 * @see Structure#type()
 			 */
-			B simple(boolean simple);
+			B nodeType(NodeType type);
 
 			/**
 			 * {@inheritDoc}

@@ -1691,7 +1691,7 @@ public final class Skript extends JavaPlugin implements Listener {
 		skriptRegistry.register(SyntaxRegistry.STRUCTURE, SyntaxInfo.Structure.builder(structureClass)
 			.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(structureClass)))
 			.addPatterns(patterns)
-			.simple(true)
+			.nodeType(SyntaxInfo.Structure.NodeType.SIMPLE)
 			.build()
 		);
 	}
