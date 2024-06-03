@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.skriptlang.skript.bukkit.registration.BukkitInfos.Event;
-import org.skriptlang.skript.lang.entry.EntryValidator;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxOrigin;
 import org.skriptlang.skript.util.Priority;
@@ -173,17 +172,6 @@ final class BukkitInfosImpl {
 		@Override
 		public Priority priority() {
 			return defaultInfo.priority();
-		}
-
-		@Override
-		@Nullable
-		public EntryValidator entryValidator() {
-			return null;
-		}
-
-		@Override
-		public boolean isSimple() {
-			return false;
 		}
 
 		@SuppressWarnings("unchecked")

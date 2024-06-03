@@ -38,6 +38,6 @@ public final class BukkitRegistryKeys {
 	/**
 	 * A key representing the Bukkit-specific {@link SkriptEvent} syntax element.
 	 */
-	public static final Key<Event<?>> EVENT = ChildKey.of(STRUCTURE, "event");
+	public static final Key<Event<?>> EVENT = Key.of("event");
 
 }

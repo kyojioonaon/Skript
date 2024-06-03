@@ -23,7 +23,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.bukkit.registration.BukkitInfosImpl.EventImpl;
-import org.skriptlang.skript.lang.entry.EntryValidator;
 import org.skriptlang.skript.registration.SyntaxInfo;
 
 import java.util.Collection;
@@ -41,7 +40,7 @@ public final class BukkitInfos {
 	 * It contains additional details including the Bukkit events represented along with documentation data.
 	 * @param <E> The class providing the implementation of the SkriptEvent this info represents.
 	 */
-	public interface Event<E extends SkriptEvent> extends SyntaxInfo.Structure<E> {
+	public interface Event<E extends SkriptEvent> extends SyntaxInfo<E> {
 
 		/**
 		 * @param eventClass The Structure class the info will represent.
@@ -113,7 +112,7 @@ public final class BukkitInfos {
 		 * @param <B> The type of builder being used.
 		 * @param <E> The SkriptEvent class providing the implementation of the syntax info being built.
 		 */
-		interface Builder<B extends Builder<B, E>, E extends SkriptEvent> extends SyntaxInfo.Structure.Builder<B, E> {
+		interface Builder<B extends Builder<B, E>, E extends SkriptEvent> extends SyntaxInfo.Builder<B, E> {
 
 			/**
 			 * Sets the "since" value the syntax info will use.
@@ -267,24 +266,6 @@ public final class BukkitInfos {
 			 */
 			@Contract("_ -> this")
 			B addEvents(Collection<Class<? extends org.bukkit.event.Event>> events);
-
-			/**
-			 * @throws UnsupportedOperationException This method is not supported for {@link SkriptEvent} syntax infos.
-			 */
-			@Override
-			@Contract("_ -> fail")
-			default B entryValidator(EntryValidator entryValidator) {
-				throw new UnsupportedOperationException("Event SyntaxInfos cannot have an EntryValidator");
-			}
-
-			/**
-			 * @throws UnsupportedOperationException This method is not supported for {@link SkriptEvent} syntax infos.
-			 */
-			@Override
-			@Contract("_ -> fail")
-			default B simple(boolean simple) {
-				throw new UnsupportedOperationException("Event SyntaxInfos cannot be simple");
-			}
 
 			/**
 			 * {@inheritDoc}
