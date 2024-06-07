@@ -42,9 +42,6 @@ final class DefaultSyntaxInfosImpl {
 			Collection<String> patterns, Priority priority, Class<R> returnType
 		) {
 			super(origin, type, supplier, patterns, priority);
-			if (returnType.isAnnotation() || returnType.isArray() || returnType.isPrimitive()) {
-				throw new IllegalArgumentException("The return type of an Expression must be a normal type");
-			}
 			this.returnType = returnType;
 		}
 
