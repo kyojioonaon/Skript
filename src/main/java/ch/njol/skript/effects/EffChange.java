@@ -245,6 +245,7 @@ public class EffChange extends Effect {
 					break;
 				}
 			}
+      
 			assert superTypeOfAcceptableChangeTypes != null;
 			deltaValuesExpression = convertedChangeDeltaExpression;
 
