@@ -18,6 +18,7 @@
  */
 package ch.njol.util;
 
+import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
 /**
@@ -189,6 +190,26 @@ public class VectorMath {
 		} else {
 			return angle;
 		}
+	}
+
+	/**
+	 * Calculates the nearest {@link BlockFace} to an arbitrary unit {@link Vector}.
+	 *
+	 * @param vector a normalized vector
+	 * @return the block face most closely aligned to the input vector
+	 */
+	public static BlockFace toNearestBlockFace(Vector vector) {
+		double maxDot = -1;
+		double dot;
+		BlockFace nearest = BlockFace.NORTH;
+		for (BlockFace face : BlockFace.values()){
+			dot = face.getDirection().dot(vector);
+			if (dot > maxDot) {
+				maxDot = dot;
+				nearest = face;
+			}
+		}
+		return nearest;
 	}
 
 	/**
