@@ -28,11 +28,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.localization.Language;
 import ch.njol.skript.util.Utils;
 import ch.njol.skript.util.Version;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.skriptlang.skript.localization.Localizer;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 
@@ -41,7 +38,6 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
  * @deprecated Use {@link org.skriptlang.skript.addon.SkriptAddon}.
  */
 @Deprecated
-@ApiStatus.NonExtendable
 public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 
 	public final JavaPlugin plugin;
@@ -135,7 +131,6 @@ public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 	// Modern SkriptAddon Compatibility
 	//
 
-	@ApiStatus.Internal
 	@Nullable
 	static SkriptAddon fromModern(org.skriptlang.skript.addon.SkriptAddon addon) {
 		Class<?> source = addon.localizer().source();
