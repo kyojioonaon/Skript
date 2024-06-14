@@ -30,6 +30,25 @@ public class ClassLoader {
 		return new Builder();
 	}
 
+	/**
+	 * A utility method for loading <b>and initializing</b> all classes within the base package/subpackages.
+	 * This method will perform a deep search, meaning classes within subpackages of subpackages will be initialized too.
+	 * @param source A class within the resource classes should be loaded from.
+	 * @param jarFile A file representing the jar to search for classes.
+	 * @param basePackage The package within the jar to load classes from.
+	 * @param subPackages The specific subpackages within <code>basePackage</code> to load.
+	 *  If not provided, classes within <code>basePackage</code> and all of its subpackages will be loaded.
+	 */
+	public static void loadClasses(Class<?> source, File jarFile, String basePackage, String... subPackages) {
+		builder()
+				.basePackage(basePackage)
+				.addSubPackages(subPackages)
+				.initialize(true)
+				.deep(true)
+				.build()
+				.loadClasses(source, jarFile);
+	}
+
 	private final String basePackage;
 	private final Collection<String> subPackages;
 	private final boolean initialize;
