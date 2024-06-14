@@ -44,7 +44,7 @@ public class ClassLoader {
 		this.basePackage = basePackage.replace('.', '/') + "/";
 		this.subPackages = subPackages.stream()
 				.map(subPackage -> subPackage.replace('.', '/') + "/")
-				.collect(Collectors.toUnmodifiableSet());
+				.collect(Collectors.toSet());
 		this.initialize = initialize;
 		this.deep = deep;
 		this.forEachClass = forEachClass;
@@ -90,11 +90,11 @@ public class ClassLoader {
 			if (jar != null) { // load from jar if available
 				classPaths = jar.stream()
 						.map(JarEntry::getName)
-						.collect(Collectors.toUnmodifiableSet());
+						.collect(Collectors.toSet());
 			} else {
 				classPaths = ClassPath.from(source.getClassLoader()).getResources().stream()
 					.map(ResourceInfo::getResourceName)
-					.collect(Collectors.toUnmodifiableSet());
+					.collect(Collectors.toSet());
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to load classes: " + e);
