@@ -16,25 +16,32 @@
  *
  * Copyright Peter Güttinger, SkriptLang team and contributors
  */
-package ch.njol.skript.events.bukkit;
+package ch.njol.skript.expressions.arithmetic;
 
 import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
-/**
- * Internally used for parsing `parse if` sections
- */
-public class SkriptParseEvent extends Event {
+import ch.njol.skript.lang.Expression;
+import org.eclipse.jdt.annotation.Nullable;
+import org.skriptlang.skript.lang.arithmetic.Arithmetics;
 
-	private final static HandlerList handlers = new HandlerList();
-
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
+public class ArithmeticExpressionInfo<T> implements ArithmeticGettable<T> {
+	
+	private final Expression<? extends T> expression;
+	
+	public ArithmeticExpressionInfo(Expression<? extends T> expression) {
+		this.expression = expression;
 	}
 
-	public static HandlerList getHandlerList() {
-		return handlers;
+	@Override
+	@Nullable
+	public T get(Event event) {
+		T object = expression.getSingle(event);
+		return object == null ? Arithmetics.getDefaultValue(expression.getReturnType()) : object;
+	}
+
+	@Override
+	public Class<? extends T> getReturnType() {
+		return expression.getReturnType();
 	}
 
 }
