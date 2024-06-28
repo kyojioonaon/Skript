@@ -501,7 +501,7 @@ public final class Skript extends JavaPlugin implements Listener {
 		NonNullPair<org.skriptlang.skript.Skript, org.skriptlang.skript.addon.SkriptAddon> skriptPair =
 			org.skriptlang.skript.Skript.createInstance(this.getName());
 		skript = skriptPair.getFirst();
-		skriptRegistry = skriptPair.getSecond().registry();
+		skriptRegistry = skriptPair.getSecond().syntaxRegistry();
 		skriptPair.getSecond().localizer().setSourceDirectories(
 			getClass(),
 			"lang",
@@ -1462,7 +1462,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 * 
 	 * @param conditionClass The condition's class
 	 * @param patterns Skript patterns to match this condition
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	public static <E extends Condition> void registerCondition(Class<E> conditionClass, String... patterns) throws IllegalArgumentException {
@@ -1479,7 +1479,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 * 
 	 * @param effectClass The effect's class
 	 * @param patterns Skript patterns to match this effect
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	public static <E extends Effect> void registerEffect(Class<E> effectClass, String... patterns) throws IllegalArgumentException {
@@ -1497,7 +1497,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 * @param sectionClass The section's class
 	 * @param patterns Skript patterns to match this section
 	 * @see Section
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	public static <E extends Section> void registerSection(Class<E> sectionClass, String... patterns) throws IllegalArgumentException {
@@ -1510,48 +1510,48 @@ public final class Skript extends JavaPlugin implements Listener {
 	}
 
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	@Unmodifiable
 	public static Collection<SyntaxElementInfo<? extends Statement>> getStatements() {
-		return instance().registry()
+		return instance().syntaxRegistry()
 				.syntaxes(SyntaxRegistry.STATEMENT).stream()
 				.map(SyntaxElementInfo::<SyntaxElementInfo<Statement>, Statement>fromModern)
 				.collect(Collectors.toList());
 	}
 	
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	@Unmodifiable
 	public static Collection<SyntaxElementInfo<? extends Condition>> getConditions() {
-		return instance().registry()
+		return instance().syntaxRegistry()
 				.syntaxes(SyntaxRegistry.CONDITION).stream()
 				.map(SyntaxElementInfo::<SyntaxElementInfo<Condition>, Condition>fromModern)
 				.collect(Collectors.toList());
 	}
 	
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	@Unmodifiable
 	public static Collection<SyntaxElementInfo<? extends Effect>> getEffects() {
-		return instance().registry()
+		return instance().syntaxRegistry()
 				.syntaxes(SyntaxRegistry.EFFECT).stream()
 				.map(SyntaxElementInfo::<SyntaxElementInfo<Effect>, Effect>fromModern)
 				.collect(Collectors.toList());
 	}
 
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	@Unmodifiable
 	public static Collection<SyntaxElementInfo<? extends Section>> getSections() {
-		return instance().registry()
+		return instance().syntaxRegistry()
 				.syntaxes(SyntaxRegistry.SECTION).stream()
 				.map(SyntaxElementInfo::<SyntaxElementInfo<Section>, Section>fromModern)
 				.collect(Collectors.toList());
@@ -1567,7 +1567,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 * @param type The expression's {@link ExpressionType type}. This is used to determine in which order to try to parse expressions.
 	 * @param patterns Skript patterns that match this expression
 	 * @throws IllegalArgumentException if returnType is not a normal class
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	public static <E extends Expression<T>, T> void registerExpression(
@@ -1584,18 +1584,18 @@ public final class Skript extends JavaPlugin implements Listener {
 	}
 	
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	public static Iterator<ExpressionInfo<?, ?>> getExpressions() {
 		List<ExpressionInfo<?, ?>> list = new ArrayList<>();
-		for (SyntaxInfo.Expression<?, ?> info : instance().registry().syntaxes(SyntaxRegistry.EXPRESSION))
+		for (SyntaxInfo.Expression<?, ?> info : instance().syntaxRegistry().syntaxes(SyntaxRegistry.EXPRESSION))
 			list.add(SyntaxElementInfo.<ExpressionInfo<Expression<?>, ?>, Expression<?>>fromModern(info));
 		return list.iterator();
 	}
 	
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	public static Iterator<ExpressionInfo<?, ?>> getExpressions(Class<?>... returnTypes) {
@@ -1624,7 +1624,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 * @param event The Bukkit event this event applies to
 	 * @param patterns Skript patterns to match this event
 	 * @return A SkriptEventInfo representing the registered event. Used to generate Skript's documentation.
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	@SuppressWarnings("unchecked")
@@ -1640,7 +1640,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 * @param events The Bukkit events this event applies to
 	 * @param patterns Skript patterns to match this event
 	 * @return A SkriptEventInfo representing the registered event. Used to generate Skript's documentation.
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	@SuppressWarnings("ConstantConditions") // caused by bad array annotations
@@ -1672,7 +1672,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	}
 
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	public static <E extends Structure> void registerStructure(Class<E> structureClass, String... patterns) {
@@ -1685,7 +1685,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	}
 
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	public static <E extends Structure> void registerSimpleStructure(Class<E> structureClass, String... patterns) {
 		checkAcceptRegistrations();
@@ -1698,7 +1698,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	}
 
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	public static <E extends Structure> void registerStructure(
@@ -1714,23 +1714,23 @@ public final class Skript extends JavaPlugin implements Listener {
 	}
 
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Deprecated
 	@Unmodifiable
 	public static Collection<SkriptEventInfo<?>> getEvents() {
-		return instance().registry()
+		return instance().syntaxRegistry()
 				.syntaxes(BukkitRegistryKeys.EVENT).stream()
 				.map(SyntaxElementInfo::<SkriptEventInfo<SkriptEvent>, SkriptEvent>fromModern)
 				.collect(Collectors.toList());
 	}
 
 	/**
-	 * @deprecated Use {@link org.skriptlang.skript.Skript#registry()}
+	 * @deprecated Use {@link org.skriptlang.skript.Skript#syntaxRegistry()}
 	 */
 	@Unmodifiable
 	public static List<StructureInfo<? extends Structure>> getStructures() {
-		return instance().registry()
+		return instance().syntaxRegistry()
 				.syntaxes(SyntaxRegistry.STRUCTURE).stream()
 				.map(SyntaxElementInfo::<StructureInfo<Structure>, Structure>fromModern)
 				.collect(Collectors.toList());

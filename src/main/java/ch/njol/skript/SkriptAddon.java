@@ -148,8 +148,8 @@ public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 	}
 
 	@Override
-	public SyntaxRegistry registry() {
-		return addon.registry();
+	public SyntaxRegistry syntaxRegistry() {
+		return addon.syntaxRegistry();
 	}
 
 	@Override

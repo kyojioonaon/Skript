@@ -48,7 +48,7 @@ final class SkriptImpl implements Skript {
 			}
 		}
 
-		SkriptAddon addon = new SkriptAddonImpl(name, this.addon.registry(), null);
+		SkriptAddon addon = new SkriptAddonImpl(name, this.addon.syntaxRegistry(), null);
 		addons.add(SkriptAddon.unmodifiableView(addon));
 		return addon;
 	}
@@ -70,8 +70,8 @@ final class SkriptImpl implements Skript {
 
 	@Override
 	@UnmodifiableView
-	public SyntaxRegistry registry() {
-		return unmodifiableAddon.registry();
+	public SyntaxRegistry syntaxRegistry() {
+		return unmodifiableAddon.syntaxRegistry();
 	}
 
 	@Override
@@ -102,7 +102,7 @@ final class SkriptImpl implements Skript {
 		}
 
 		@Override
-		public SyntaxRegistry registry() {
+		public SyntaxRegistry syntaxRegistry() {
 			return registry;
 		}
 

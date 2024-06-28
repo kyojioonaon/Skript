@@ -16,7 +16,7 @@ public interface SkriptAddon {
 
 	/**
 	 * Constructs an unmodifiable view of an addon.
-	 * That is, the returned addon will return unmodifiable views of its {@link #registry()} and {@link #localizer()}.
+	 * That is, the returned addon will return unmodifiable views of its {@link #syntaxRegistry()} and {@link #localizer()}.
 	 * @param addon The addon backing this unmodifiable view.
 	 * @return An unmodifiable view of <code>addon</code>.
 	 * @see SyntaxRegistry#unmodifiableView(SyntaxRegistry)
@@ -36,7 +36,7 @@ public interface SkriptAddon {
 	/**
 	 * @return A syntax registry for this addon's syntax.
 	 */
-	SyntaxRegistry registry();
+	SyntaxRegistry syntaxRegistry();
 
 	/**
 	 * @return A localizer for this addon's localizations.
