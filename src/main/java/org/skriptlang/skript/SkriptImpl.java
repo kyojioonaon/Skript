@@ -44,7 +44,7 @@ final class SkriptImpl implements Skript {
 		}
 
 		SkriptAddon addon = new SkriptAddonImpl(name, ChildSyntaxRegistry.of(this.addon.registry(), SyntaxRegistry.empty()), null);
-		addons.add(addon);
+		addons.add(SkriptAddon.unmodifiableView(addon));
 		return addon;
 	}
 
