@@ -65,7 +65,8 @@ public abstract class PropertyExpression<F, T> extends SimpleExpression<T> {
 	 */
 	@ApiStatus.Experimental
 	public static <T> void register(SyntaxRegistry registry, Class<? extends Expression<T>> expressionClass, Class<T> type, String property, String fromType) {
-		registry.register(SyntaxRegistry.EXPRESSION, SyntaxInfo.Expression.builder(expressionClass, type)
+		registry.register(SyntaxRegistry.EXPRESSION, SyntaxInfo.Expression.builder(expressionClass)
+				.returnType(type)
 				.priority(DEFAULT_PRIORITY)
 				.addPatterns(
 						"[the] " + property + " of %" + fromType + "%",
@@ -101,7 +102,8 @@ public abstract class PropertyExpression<F, T> extends SimpleExpression<T> {
 	 */
 	@ApiStatus.Experimental
 	public static <T> void registerDefault(SyntaxRegistry registry, Class<? extends Expression<T>> expressionClass, Class<T> type, String property, String fromType) {
-		registry.register(SyntaxRegistry.EXPRESSION, SyntaxInfo.Expression.builder(expressionClass, type)
+		registry.register(SyntaxRegistry.EXPRESSION, SyntaxInfo.Expression.builder(expressionClass)
+				.returnType(type)
 				.priority(DEFAULT_PRIORITY)
 				.addPatterns(
 						"[the] " + property + " [of %" + fromType + "%]",

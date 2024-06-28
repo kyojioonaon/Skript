@@ -19,6 +19,7 @@
 package org.skriptlang.skript.registration;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.lang.entry.EntryValidator;
 import org.skriptlang.skript.util.Priority;
@@ -39,9 +40,10 @@ final class DefaultSyntaxInfosImpl {
 
 		ExpressionImpl(
 			SyntaxOrigin origin, Class<E> type, @Nullable Supplier<E> supplier,
-			Collection<String> patterns, Priority priority, Class<R> returnType
+			Collection<String> patterns, Priority priority, @Nullable Class<R> returnType
 		) {
 			super(origin, type, supplier, patterns, priority);
+			Preconditions.checkArgument(returnType != null, "An expression syntax info must have a return type.");
 			this.returnType = returnType;
 		}
 
@@ -77,15 +79,21 @@ final class DefaultSyntaxInfosImpl {
 		/**
 		 * {@inheritDoc}
 		 */
+		@SuppressWarnings("unchecked")
 		static final class BuilderImpl<B extends Expression.Builder<B, E, R>, E extends ch.njol.skript.lang.Expression<R>, R>
 			extends SyntaxInfoImpl.BuilderImpl<B, E>
 			implements Expression.Builder<B, E, R> {
 
-			private final Class<R> returnType;
+			private @Nullable Class<R> returnType;
 
-			BuilderImpl(Class<E> expressionClass, Class<R> returnType) {
+			BuilderImpl(Class<E> expressionClass) {
 				super(expressionClass);
+			}
+
+			@Override
+			public B returnType(Class<R> returnType) {
 				this.returnType = returnType;
+				return (B) this;
 			}
 
 			public Expression<E, R> build() {

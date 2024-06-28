@@ -37,13 +37,12 @@ interface DefaultSyntaxInfos {
 		/**
 		 * Constructs a builder for an expression syntax info.
 		 * @param expressionClass The Expression class the info will represent.
-		 * @return An Expression-specific builder for creating a syntax info representing <code>type</code>.
+		 * @return An Expression-specific builder for creating a syntax info representing <code>expressionClass</code>.
 		 * @param <E> The class providing the implementation of the Expression this info represents.
-		 * @param <R> The type of the return type of the Expression.
 		 */
-		@Contract("_, _ -> new")
-		static <E extends ch.njol.skript.lang.Expression<R>, R> Builder<? extends Builder<?, E, R>, E, R> builder(Class<E> expressionClass, Class<R> returnType) {
-			return new ExpressionImpl.BuilderImpl<>(expressionClass, returnType);
+		@Contract("_ -> new")
+		static <E extends ch.njol.skript.lang.Expression<R>, R> Builder<? extends Builder<?, E, R>, E, R> builder(Class<E> expressionClass) {
+			return new ExpressionImpl.BuilderImpl<>(expressionClass);
 		}
 
 		/**
@@ -53,12 +52,21 @@ interface DefaultSyntaxInfos {
 
 		/**
 		 * An Expression-specific builder is used for constructing a new Expression syntax info.
-		 * @see #builder(Class, Class)
+		 * @see #builder(Class)
 		 * @param <B> The type of builder being used.
 		 * @param <E> The Expression class providing the implementation of the syntax info being built.
 		 * @param <R> The type of the return type of the Expression.
 		 */
 		interface Builder<B extends Builder<B, E, R>, E extends ch.njol.skript.lang.Expression<R>, R> extends SyntaxInfo.Builder<B, E> {
+
+			/**
+			 * Sets the class representing the supertype of all values the Expression may return.
+			 * @param returnType The class to use as the return type.
+			 * @return This builder.
+			 * @see Expression#returnType()
+			 */
+			@Contract("_ -> this")
+			B returnType(Class<R> returnType);
 
 			/**
 			 * {@inheritDoc}
@@ -118,7 +126,7 @@ interface DefaultSyntaxInfos {
 		/**
 		 * Constructs a builder for a structure syntax info.
 		 * @param structureClass The Structure class the info will represent.
-		 * @return A Structure-specific builder for creating a syntax info representing <code>type</code>.
+		 * @return A Structure-specific builder for creating a syntax info representing <code>structureClass</code>.
 		 * @param <E> The class providing the implementation of the Structure this info represents.
 		 */
 		@Contract("_ -> new")

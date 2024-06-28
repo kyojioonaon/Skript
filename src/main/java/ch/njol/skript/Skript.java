@@ -1574,7 +1574,8 @@ public final class Skript extends JavaPlugin implements Listener {
 		Class<E> expressionType, Class<T> returnType, ExpressionType type, String... patterns
 	) throws IllegalArgumentException {
 		checkAcceptRegistrations();
-		skriptRegistry.register(SyntaxRegistry.EXPRESSION, SyntaxInfo.Expression.builder(expressionType, returnType)
+		skriptRegistry.register(SyntaxRegistry.EXPRESSION, SyntaxInfo.Expression.builder(expressionType)
+				.returnType(returnType)
 				.priority(type.priority())
 				.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(expressionType)))
 				.addPatterns(patterns)
