@@ -110,7 +110,7 @@ public class ExprHealAmount extends SimpleExpression<Double> {
 
 	@Override
 	public boolean setTime(int time) {
-		return super.setTime(time);
+		return super.setTime(time, EntityRegainHealthEvent.class);
 	}
 
 	@Override
