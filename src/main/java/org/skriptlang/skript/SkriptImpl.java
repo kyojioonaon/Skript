@@ -9,16 +9,21 @@ import org.skriptlang.skript.addon.AddonModule;
 import org.skriptlang.skript.addon.SkriptAddon;
 import org.skriptlang.skript.localization.Localizer;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import org.skriptlang.skript.registration.SyntaxRegistry.ChildSyntaxRegistry;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 final class SkriptImpl implements Skript {
 
+	/**
+	 * The addon instance backing this Skript.
+	 */
 	final SkriptAddon addon;
+
+	/**
+	 * {@link SkriptAddon#unmodifiableView(SkriptAddon)} of {@link #addon}.
+	 */
 	private final SkriptAddon unmodifiableAddon;
 
 	SkriptImpl(String name) {
@@ -43,7 +48,7 @@ final class SkriptImpl implements Skript {
 			}
 		}
 
-		SkriptAddon addon = new SkriptAddonImpl(name, ChildSyntaxRegistry.of(this.addon.registry(), SyntaxRegistry.empty()), null);
+		SkriptAddon addon = new SkriptAddonImpl(name, this.addon.registry(), null);
 		addons.add(SkriptAddon.unmodifiableView(addon));
 		return addon;
 	}
