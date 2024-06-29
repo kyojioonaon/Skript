@@ -49,15 +49,13 @@ public final class BukkitInfos {
 		 * @return Documentation data. Represents the version of the plugin in which a syntax was added.
 		 * @see ch.njol.skript.doc.Since
 		 */
-		@Nullable
-		String since();
+		@Nullable String since();
 
 		/**
 		 * @return Documentation data. Used for identifying specific syntaxes in documentation.
 		 * @see ch.njol.skript.doc.DocumentationId
 		 */
-		@Nullable
-		String documentationId();
+		@Nullable String documentationId();
 
 		/**
 		 * @return Documentation data. A description of a syntax.

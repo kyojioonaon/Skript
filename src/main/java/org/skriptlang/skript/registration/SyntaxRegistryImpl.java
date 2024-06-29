@@ -58,14 +58,12 @@ final class SyntaxRegistryImpl implements SyntaxRegistry {
 		}
 
 		@Override
-		@Unmodifiable
-		public Collection<SyntaxInfo<?>> elements() {
+		public @Unmodifiable Collection<SyntaxInfo<?>> elements() {
 			return registry.elements();
 		}
 
 		@Override
-		@Unmodifiable
-		public <I extends SyntaxInfo<?>> Collection<I> syntaxes(Key<I> key) {
+		public @Unmodifiable <I extends SyntaxInfo<?>> Collection<I> syntaxes(Key<I> key) {
 			return registry.syntaxes(key);
 		}
 

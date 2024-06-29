@@ -25,10 +25,8 @@ final class BukkitInfosImpl {
 		private final SyntaxInfo<E> defaultInfo;
 		private final String name;
 		private final String id;
-		@Nullable
-		private final String since;
-		@Nullable
-		private final String documentationId;
+		private final @Nullable String since;
+		private final @Nullable String documentationId;
 		private final Collection<String> description;
 		private final Collection<String> examples;
 		private final Collection<String> keywords;
@@ -161,10 +159,8 @@ final class BukkitInfosImpl {
 
 			private final SyntaxInfo.Builder<?, E> defaultBuilder;
 			private final String name;
-			@Nullable
-			private String since;
-			@Nullable
-			private String documentationId;
+			private @Nullable String since;
+			private @Nullable String documentationId;
 			private final List<String> description = new ArrayList<>();
 			private final List<String> examples = new ArrayList<>();
 			private final List<String> keywords = new ArrayList<>();

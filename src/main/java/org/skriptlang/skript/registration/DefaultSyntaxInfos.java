@@ -120,8 +120,7 @@ interface DefaultSyntaxInfos {
 		 * @return The entry validator to use for handling the Structure's entries.
 		 *  If null, the Structure is expected to manually handle any entries.
 		 */
-		@Nullable
-		EntryValidator entryValidator();
+		@Nullable EntryValidator entryValidator();
 
 		/**
 		 * @return The type of {@link ch.njol.skript.config.Node}s that can represent the Structure.

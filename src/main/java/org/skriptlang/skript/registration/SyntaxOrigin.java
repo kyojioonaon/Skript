@@ -2,14 +2,13 @@ package org.skriptlang.skript.registration;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.UnmodifiableView;
 import org.skriptlang.skript.addon.SkriptAddon;
 
 /**
  * The origin of a syntax, currently only used for documentation purposes.
  */
-@ApiStatus.Experimental
 @FunctionalInterface
+@ApiStatus.Experimental
 public interface SyntaxOrigin {
 
 	/**
@@ -47,7 +46,6 @@ public interface SyntaxOrigin {
 		 * @return An unmodifiable view of the addon this origin describes.
 		 * @see SkriptAddon#unmodifiableView()
 		 */
-		@UnmodifiableView
 		public SkriptAddon addon() {
 			return addon;
 		}

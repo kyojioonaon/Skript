@@ -45,13 +45,11 @@ public interface Priority extends Comparable<Priority> {
 	/**
 	 * @return A collection of all priorities this priority is known to be after.
 	 */
-	@Unmodifiable
-	Collection<Priority> after();
+	@Unmodifiable Collection<Priority> after();
 
 	/**
 	 * @return A collection of all priorities this priority is known to be before.
 	 */
-	@Unmodifiable
-	Collection<Priority> before();
+	@Unmodifiable Collection<Priority> before();
 
 }

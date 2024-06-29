@@ -19,8 +19,7 @@ class SyntaxInfoImpl<T extends SyntaxElement> implements SyntaxInfo<T> {
 
 	private final SyntaxOrigin origin;
 	private final Class<T> type;
-	@Nullable
-	private final Supplier<T> supplier;
+	private final @Nullable Supplier<T> supplier;
 	private final Collection<String> patterns;
 	private final Priority priority;
 
@@ -67,8 +66,7 @@ class SyntaxInfoImpl<T extends SyntaxElement> implements SyntaxInfo<T> {
 	}
 
 	@Override
-	@Unmodifiable
-	public Collection<String> patterns() {
+	public @Unmodifiable Collection<String> patterns() {
 		return patterns;
 	}
 
@@ -128,8 +126,7 @@ class SyntaxInfoImpl<T extends SyntaxElement> implements SyntaxInfo<T> {
 
 		final Class<E> type;
 		SyntaxOrigin origin;
-		@Nullable
-		Supplier<E> supplier;
+		@Nullable Supplier<E> supplier;
 		final List<String> patterns = new ArrayList<>();
 		Priority priority = SyntaxInfo.COMBINED;
 

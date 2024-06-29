@@ -66,8 +66,7 @@ public interface SyntaxInfo<E extends SyntaxElement> extends DefaultSyntaxInfos 
 	/**
 	 * @return The patterns of this syntax.
 	 */
-	@Unmodifiable
-	Collection<String> patterns();
+	@Unmodifiable Collection<String> patterns();
 
 	/**
 	 * @return The priority of this syntax, which dictates its position for matching during parsing.
@@ -132,6 +131,7 @@ public interface SyntaxInfo<E extends SyntaxElement> extends DefaultSyntaxInfos 
 		 * @param priority The priority to use.
 		 * @return This builder.
 		 */
+		@Contract("_ -> this")
 		B priority(Priority priority);
 
 		/**

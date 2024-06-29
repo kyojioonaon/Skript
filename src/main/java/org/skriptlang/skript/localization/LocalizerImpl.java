@@ -29,26 +29,22 @@ final class LocalizerImpl implements Localizer {
 	}
 
 	@Override
-	@Nullable
-	public Class<?> source() {
+	public @Nullable Class<?> source() {
 		return source;
 	}
 
 	@Override
-	@Nullable
-	public String languageFileDirectory() {
+	public @Nullable String languageFileDirectory() {
 		return languageFileDirectory;
 	}
 
 	@Override
-	@Nullable
-	public String dataFileDirectory() {
+	public @Nullable String dataFileDirectory() {
 		return dataFileDirectory;
 	}
 
 	@Override
-	@Nullable
-	public String translate(String key) {
+	public @Nullable String translate(String key) {
 		return Language.get_(key);
 	}
 
@@ -66,26 +62,22 @@ final class LocalizerImpl implements Localizer {
 		}
 
 		@Override
-		@Nullable
-		public Class<?> source() {
+		public @Nullable Class<?> source() {
 			return localizer.source();
 		}
 
 		@Override
-		@Nullable
-		public String languageFileDirectory() {
+		public @Nullable String languageFileDirectory() {
 			return localizer.languageFileDirectory();
 		}
 
 		@Override
-		@Nullable
-		public String dataFileDirectory() {
+		public @Nullable String dataFileDirectory() {
 			return localizer.dataFileDirectory();
 		}
 
 		@Override
-		@Nullable
-		public String translate(String key) {
+		public @Nullable String translate(String key) {
 			return localizer.translate(key);
 		}
 

@@ -39,28 +39,24 @@ public interface Localizer extends ViewProvider<Localizer> {
 	/**
 	 * @return A class to be used for loading resources from the jar.
 	 */
-	@Nullable
-	Class<?> source();
+	@Nullable Class<?> source();
 
 	/**
 	 * @return The path to the directory on the jar containing language files.
 	 */
-	@Nullable
-	String languageFileDirectory();
+	@Nullable String languageFileDirectory();
 
 	/**
 	 * @return The path to the directory on the disk containing language files.
 	 */
-	@Nullable
-	String dataFileDirectory();
+	@Nullable String dataFileDirectory();
 
 	/**
 	 * Used for obtaining the translation of a language key.
 	 * @param key The key of the translation to obtain.
 	 * @return The translation represented by the provided key, or null if no translation exists.
 	 */
-	@Nullable
-	String translate(String key);
+	@Nullable String translate(String key);
 
 	/**
 	 * Constructs an unmodifiable view of this localizer.

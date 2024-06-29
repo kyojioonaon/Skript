@@ -54,8 +54,7 @@ final class SkriptImpl implements Skript {
 	}
 
 	@Override
-	@Unmodifiable
-	public Collection<SkriptAddon> addons() {
+	public @Unmodifiable Collection<SkriptAddon> addons() {
 		return ImmutableSet.copyOf(addons);
 	}
 

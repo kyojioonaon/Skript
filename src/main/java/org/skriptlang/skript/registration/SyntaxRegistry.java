@@ -67,8 +67,7 @@ public interface SyntaxRegistry extends ViewProvider<SyntaxRegistry>, Registry<S
 	 * @return An unmodifiable snapshot of all syntaxes registered under <code>key</code>.
 	 * @param <I> The syntax type.
 	 */
-	@Unmodifiable
-	<I extends SyntaxInfo<?>> Collection<I> syntaxes(Key<I> key);
+	<I extends SyntaxInfo<?>> @Unmodifiable Collection<I> syntaxes(Key<I> key);
 
 	/**
 	 * Registers a new syntax under a provided key.
@@ -99,6 +98,7 @@ public interface SyntaxRegistry extends ViewProvider<SyntaxRegistry>, Registry<S
 
 	/**
 	 * {@inheritDoc}
+	 * There are no guarantees on the ordering of the returned collection.
 	 * @return An unmodifiable snapshot of all syntaxes registered.
 	 */
 	@Override

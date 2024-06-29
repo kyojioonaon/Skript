@@ -7,8 +7,8 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 /**
  * A module is a component of a {@link SkriptAddon} used for registering syntax and other {@link Skript} components.
  */
-@ApiStatus.Experimental
 @FunctionalInterface
+@ApiStatus.Experimental
 public interface AddonModule {
 
 	/**

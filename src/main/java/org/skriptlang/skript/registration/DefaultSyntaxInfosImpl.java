@@ -92,8 +92,7 @@ final class DefaultSyntaxInfosImpl {
 	public static class StructureImpl<E extends org.skriptlang.skript.lang.structure.Structure>
 		extends SyntaxInfoImpl<E> implements DefaultSyntaxInfos.Structure<E> {
 
-		@Nullable
-		private final EntryValidator entryValidator;
+		private final @Nullable EntryValidator entryValidator;
 		private final NodeType nodeType;
 
 		StructureImpl(
@@ -109,8 +108,7 @@ final class DefaultSyntaxInfosImpl {
 		}
 
 		@Override
-		@Nullable
-		public EntryValidator entryValidator() {
+		public @Nullable EntryValidator entryValidator() {
 			return entryValidator;
 		}
 
@@ -151,8 +149,7 @@ final class DefaultSyntaxInfosImpl {
 			extends SyntaxInfoImpl.BuilderImpl<B, E>
 			implements Structure.Builder<B, E> {
 
-			@Nullable
-			private EntryValidator entryValidator;
+			private @Nullable EntryValidator entryValidator;
 			private NodeType nodeType = NodeType.SECTION;
 
 			BuilderImpl(Class<E> structureClass) {
