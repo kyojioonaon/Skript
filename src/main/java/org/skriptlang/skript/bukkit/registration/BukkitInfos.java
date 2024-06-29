@@ -1,6 +1,7 @@
 package org.skriptlang.skript.bukkit.registration;
 
 import ch.njol.skript.lang.SkriptEvent;
+import ch.njol.skript.lang.SkriptEvent.ListeningBehavior;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,11 @@ public final class BukkitInfos {
 		) {
 			return new EventImpl.BuilderImpl<>(eventClass, name);
 		}
+
+		/**
+		 * @return The listening behavior for the SkriptEvent. Determines when the event should trigger.
+		 */
+		ListeningBehavior listeningBehavior();
 
 		/**
 		 * @return The name of the {@link SkriptEvent}.
@@ -95,7 +101,18 @@ public final class BukkitInfos {
 		interface Builder<B extends Builder<B, E>, E extends SkriptEvent> extends SyntaxInfo.Builder<B, E> {
 
 			/**
-			 * Sets the "since" value the syntax info will use.
+			 * Sets the listening behavior the event will use.
+			 * This determines when the event should trigger.
+			 * By default, this is {@link ListeningBehavior#UNCANCELLED}.
+			 * @param listeningBehavior The listening behavior to use.
+			 * @return This builder.
+			 * @see Event#listeningBehavior()
+			 */
+			@Contract("_ -> this")
+			B listeningBehavior(ListeningBehavior listeningBehavior);
+
+			/**
+			 * Sets the "since" value the event's documentation will use.
 			 * @param since The "since" value to use.
 			 * @return This builder.
 			 * @see Event#since()
@@ -104,7 +121,7 @@ public final class BukkitInfos {
 			B since(String since);
 
 			/**
-			 * Sets the documentation identifier the syntax info will use.
+			 * Sets the documentation identifier the event's documentation will use.
 			 * @param documentationId The documentation identifier to use.
 			 * @return This builder.
 			 * @see Event#documentationId()
@@ -113,7 +130,7 @@ public final class BukkitInfos {
 			B documentationId(String documentationId);
 
 			/**
-			 * Adds a line of description to the syntax info.
+			 * Adds a description line to the event's documentation.
 			 * @param description The description line to add.
 			 * @return This builder.
 			 * @see Event#description()
@@ -122,7 +139,7 @@ public final class BukkitInfos {
 			B addDescription(String description);
 
 			/**
-			 * Adds lines of description to the syntax info.
+			 * Adds lines of description to the event's documentation.
 			 * @param description The description lines to add.
 			 * @return This builder.
 			 * @see Event#description()
@@ -131,7 +148,7 @@ public final class BukkitInfos {
 			B addDescription(String... description);
 
 			/**
-			 * Adds lines of description to the syntax info.
+			 * Adds lines of description to the event's documentation.
 			 * @param description The description lines to add.
 			 * @return This builder.
 			 * @see Event#description()
@@ -140,7 +157,7 @@ public final class BukkitInfos {
 			B addDescription(Collection<String> description);
 
 			/**
-			 * Adds an example to the syntax info.
+			 * Adds an example to the event's documentation.
 			 * @param example The example to add.
 			 * @return This builder.
 			 * @see Event#examples()
@@ -149,7 +166,7 @@ public final class BukkitInfos {
 			B addExample(String example);
 
 			/**
-			 * Adds examples to the syntax info.
+			 * Adds examples to the event's documentation.
 			 * @param examples The examples to add.
 			 * @return This builder.
 			 * @see Event#examples()
@@ -158,7 +175,7 @@ public final class BukkitInfos {
 			B addExamples(String... examples);
 
 			/**
-			 * Adds examples to the syntax info.
+			 * Adds examples to the event's documentation.
 			 * @param examples The examples to add.
 			 * @return This builder.
 			 * @see Event#examples()
@@ -167,7 +184,7 @@ public final class BukkitInfos {
 			B addExamples(Collection<String> examples);
 
 			/**
-			 * Adds a keyword to the syntax info.
+			 * Adds a keyword to the event's documentation.
 			 * @param keyword The keyword to add.
 			 * @return This builder.
 			 * @see Event#keywords()
@@ -176,7 +193,7 @@ public final class BukkitInfos {
 			B addKeyword(String keyword);
 
 			/**
-			 * Adds keywords to the syntax info.
+			 * Adds keywords to the event's documentation.
 			 * @param keywords The keywords to add.
 			 * @return This builder.
 			 * @see Event#keywords()
@@ -185,7 +202,7 @@ public final class BukkitInfos {
 			B addKeywords(String... keywords);
 
 			/**
-			 * Adds keywords to the syntax info.
+			 * Adds keywords to the event's documentation.
 			 * @param keywords The keywords to add.
 			 * @return This builder.
 			 * @see Event#keywords()
@@ -194,7 +211,7 @@ public final class BukkitInfos {
 			B addKeywords(Collection<String> keywords);
 
 			/**
-			 * Adds a required plugin to the syntax info.
+			 * Adds a required plugin to event's documentation.
 			 * @param plugin The required plugin to add.
 			 * @return This builder.
 			 * @see Event#requiredPlugins()
@@ -203,7 +220,7 @@ public final class BukkitInfos {
 			B addRequiredPlugin(String plugin);
 
 			/**
-			 * Adds required plugins to the syntax info.
+			 * Adds required plugins to the event's documentation.
 			 * @param plugins The required plugins to add.
 			 * @return This builder.
 			 * @see Event#requiredPlugins()
@@ -212,7 +229,7 @@ public final class BukkitInfos {
 			B addRequiredPlugins(String... plugins);
 
 			/**
-			 * Adds required plugins to the syntax info.
+			 * Adds required plugins to the event's documentation.
 			 * @param plugins The required plugins to add.
 			 * @return This builder.
 			 * @see Event#requiredPlugins()
@@ -221,7 +238,7 @@ public final class BukkitInfos {
 			B addRequiredPlugins(Collection<String> plugins);
 
 			/**
-			 * Adds an event to the syntax info.
+			 * Adds an event to the event's documentation.
 			 * @param event The event to add.
 			 * @return This builder.
 			 * @see Event#events()
@@ -230,7 +247,7 @@ public final class BukkitInfos {
 			B addEvent(Class<? extends org.bukkit.event.Event> event);
 
 			/**
-			 * Adds events to the syntax info.
+			 * Adds events to the event's documentation.
 			 * @param events The events to add.
 			 * @return This builder.
 			 * @see Event#events()
@@ -239,7 +256,7 @@ public final class BukkitInfos {
 			B addEvents(Class<? extends org.bukkit.event.Event>... events);
 
 			/**
-			 * Adds events to the syntax info.
+			 * Adds events to the event's documentation.
 			 * @param events The events to add.
 			 * @return This builder.
 			 * @see Event#events()

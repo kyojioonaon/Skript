@@ -1,6 +1,7 @@
 package org.skriptlang.skript.bukkit.registration;
 
 import ch.njol.skript.lang.SkriptEvent;
+import ch.njol.skript.lang.SkriptEvent.ListeningBehavior;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +24,7 @@ final class BukkitInfosImpl {
 	static final class EventImpl<E extends SkriptEvent> implements Event<E> {
 
 		private final SyntaxInfo<E> defaultInfo;
+		private final ListeningBehavior listeningBehavior;
 		private final String name;
 		private final String id;
 		private final @Nullable String since;
@@ -34,11 +36,12 @@ final class BukkitInfosImpl {
 		private final Collection<Class<? extends org.bukkit.event.Event>> events;
 
 		EventImpl(
-			SyntaxInfo<E> defaultInfo, String name,
+			SyntaxInfo<E> defaultInfo, ListeningBehavior listeningBehavior, String name,
 			@Nullable String since, @Nullable String documentationId, Collection<String> description, Collection<String> examples,
 			Collection<String> keywords, Collection<String> requiredPlugins, Collection<Class<? extends org.bukkit.event.Event>> events
 		) {
 			this.defaultInfo = defaultInfo;
+			this.listeningBehavior = listeningBehavior;
 			this.name = name.startsWith("*") ? name.substring(1) : "On " + name;
 			this.id = name.toLowerCase(Locale.ENGLISH)
 					.replaceAll("[#'\"<>/&]", "")
@@ -50,6 +53,11 @@ final class BukkitInfosImpl {
 			this.keywords = ImmutableList.copyOf(keywords);
 			this.requiredPlugins = ImmutableList.copyOf(requiredPlugins);
 			this.events = ImmutableList.copyOf(events);
+		}
+
+		@Override
+		public ListeningBehavior listeningBehavior() {
+			return listeningBehavior;
 		}
 
 		@Override
@@ -158,6 +166,7 @@ final class BukkitInfosImpl {
 		static final class BuilderImpl<B extends Event.Builder<B, E>, E extends SkriptEvent> implements Event.Builder<B, E> {
 
 			private final SyntaxInfo.Builder<?, E> defaultBuilder;
+			private ListeningBehavior listeningBehavior = ListeningBehavior.UNCANCELLED;
 			private final String name;
 			private @Nullable String since;
 			private @Nullable String documentationId;
@@ -170,6 +179,12 @@ final class BukkitInfosImpl {
 			BuilderImpl(Class<E> type, String name) {
 				this.defaultBuilder = SyntaxInfo.builder(type);
 				this.name = name;
+			}
+
+			@Override
+			public B listeningBehavior(ListeningBehavior listeningBehavior) {
+				this.listeningBehavior = listeningBehavior;
+				return (B) this;
 			}
 
 			@Override
@@ -313,7 +328,7 @@ final class BukkitInfosImpl {
 			@Override
 			public Event<E> build() {
 				return new EventImpl<>(
-					defaultBuilder.build(), name,
+					defaultBuilder.build(), listeningBehavior, name,
 					since, documentationId, description, examples, keywords, requiredPlugins, events
 				);
 			}
