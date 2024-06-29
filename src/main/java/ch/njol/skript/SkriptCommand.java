@@ -41,9 +41,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.eclipse.jdt.annotation.Nullable;
-import org.skriptlang.skript.addon.SkriptAddon;
 import org.skriptlang.skript.lang.script.Script;
 
 import java.io.File;
@@ -371,13 +369,10 @@ public class SkriptCommand implements CommandExecutor {
 					info(sender, "info.version", Skript.getVersion());
 				}
 
-				Collection<SkriptAddon> addons = Skript.instance().addons();
+				Collection<SkriptAddon> addons = Skript.getAddons();
 				info(sender, "info.addons", addons.isEmpty() ? "None" : "");
 				for (SkriptAddon addon : addons) {
-					JavaPlugin plugin = addon instanceof ch.njol.skript.SkriptAddon
-							? ((ch.njol.skript.SkriptAddon) addon).plugin
-							: JavaPlugin.getProvidingPlugin(addon.getClass());
-					PluginDescriptionFile desc = plugin.getDescription();
+					PluginDescriptionFile desc = addon.plugin.getDescription();
 					String web = desc.getWebsite();
 					Skript.info(sender, " - " + desc.getFullName() + (web != null ? " (" + web + ")" : ""));
 				}

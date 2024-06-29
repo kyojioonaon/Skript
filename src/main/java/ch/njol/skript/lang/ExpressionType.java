@@ -26,50 +26,38 @@ import org.skriptlang.skript.util.Priority;
 
 /**
  * Used to define in which order to parse expressions.
- * @deprecated Use {@link org.skriptlang.skript.util.Priority}.
  */
-@Deprecated
 public enum ExpressionType {
 
 	/**
 	 * Expressions that only match simple text, e.g. "[the] player"
-	 * @deprecated Use {@link SyntaxInfo#SIMPLE}.
 	 */
-	@Deprecated
 	SIMPLE(SyntaxInfo.SIMPLE),
 
 	/**
 	 * Expressions that are related to the Event that are typically simple.
 	 * 
 	 * @see EventValueExpression
-	 * @deprecated Use {@link EventValueExpression#DEFAULT_PRIORITY} when not using the built-in register methods.
 	 */
-	@Deprecated
 	EVENT(EventValueExpression.DEFAULT_PRIORITY),
 
 	/**
 	 * Expressions that contain other expressions, e.g. "[the] distance between %location% and %location%"
 	 * 
 	 * @see #PROPERTY
-	 * @deprecated Use {@link SyntaxInfo#COMBINED}.
 	 */
-	@Deprecated
 	COMBINED(SyntaxInfo.COMBINED),
 
 	/**
 	 * Property expressions, e.g. "[the] data value[s] of %items%"/"%items%'[s] data value[s]"
 	 * 
 	 * @see PropertyExpression
-	 * @deprecated Use {@link PropertyExpression#DEFAULT_PRIORITY} when not using the built-in register methods.
 	 */
-	@Deprecated
 	PROPERTY(PropertyExpression.DEFAULT_PRIORITY),
 
 	/**
 	 * Expressions whose pattern matches (almost) everything. Typically when using regex. Example: "[the] [loop-]<.+>"
-	 * @deprecated Use {@link SyntaxInfo#PATTERN_MATCHES_EVERYTHING}.
 	 */
-	@Deprecated
 	PATTERN_MATCHES_EVERYTHING(SyntaxInfo.PATTERN_MATCHES_EVERYTHING);
 
 	private final Priority priority;

@@ -33,9 +33,7 @@ public class StructureInfo<E extends Structure> extends SyntaxElementInfo<E> {
 
 	/**
 	 * Whether the Structure is represented by a {@link ch.njol.skript.config.SimpleNode}.
-	 * @deprecated Use {@link #nodeType}.
 	 */
-	@Deprecated
 	public final boolean simple;
 
 	public final SyntaxInfo.Structure.NodeType nodeType;

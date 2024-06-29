@@ -35,9 +35,7 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 
 /**
  * Utility class for Skript addons. Use {@link Skript#registerAddon(JavaPlugin)} to create a SkriptAddon instance for your plugin.
- * @deprecated Use {@link org.skriptlang.skript.addon.SkriptAddon}.
  */
-@Deprecated
 public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 
 	public final JavaPlugin plugin;

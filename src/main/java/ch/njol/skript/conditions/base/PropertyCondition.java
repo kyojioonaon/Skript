@@ -153,9 +153,7 @@ public abstract class PropertyCondition<T> extends Condition implements Checker<
 	 * @param condition the class to register
 	 * @param property the property name, for example <i>fly</i> in <i>players can fly</i>
 	 * @param type must be plural, for example <i>players</i> in <i>players can fly</i>
-	 * @deprecated Use {@link #register(SyntaxRegistry, Class, String, String)}.
 	 */
-	@Deprecated
 	public static void register(Class<? extends Condition> condition, String property, String type) {
 		register(condition, PropertyType.BE, property, type);
 	}
@@ -165,9 +163,7 @@ public abstract class PropertyCondition<T> extends Condition implements Checker<
 	 * @param propertyType the property type, see {@link PropertyType}
 	 * @param property the property name, for example <i>fly</i> in <i>players can fly</i>
 	 * @param type must be plural, for example <i>players</i> in <i>players can fly</i>
-	 * @deprecated Use {@link #register(SyntaxRegistry, Class, PropertyType, String, String)}.
 	 */
-	@Deprecated
 	public static void register(Class<? extends Condition> condition, PropertyType propertyType, String property, String type) {
 		if (type.contains("%"))
 			throw new SkriptAPIException("The type argument must not contain any '%'s");

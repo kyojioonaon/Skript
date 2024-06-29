@@ -83,9 +83,7 @@ public abstract class PropertyExpression<F, T> extends SimpleExpression<T> {
 	 * @param type the main expression type the property is based off of.
 	 * @param property the name of the property.
 	 * @param fromType should be plural to support multiple objects but doesn't have to be.
-	 * @deprecated Use {@link #register(SyntaxRegistry, Class, Class, String, String)}.
 	 */
-	@Deprecated
 	public static <T> void register(Class<? extends Expression<T>> expressionClass, Class<T> type, String property, String fromType) {
 		Skript.registerExpression(expressionClass, type, ExpressionType.PROPERTY, "[the] " + property + " of %" + fromType + "%", "%" + fromType + "%'[s] " + property);
 	}
@@ -121,9 +119,7 @@ public abstract class PropertyExpression<F, T> extends SimpleExpression<T> {
 	 * @param type the main expression type the property is based off of.
 	 * @param property the name of the property.
 	 * @param fromType should be plural to support multiple objects but doesn't have to be.
-	 * @deprecated Use {@link #registerDefault(SyntaxRegistry, Class, Class, String, String)}.
 	 */
-	@Deprecated
 	public static <T> void registerDefault(Class<? extends Expression<T>> expressionClass, Class<T> type, String property, String fromType) {
 		Skript.registerExpression(expressionClass, type, ExpressionType.PROPERTY, "[the] " + property + " [of %" + fromType + "%]", "%" + fromType + "%'[s] " + property);
 	}

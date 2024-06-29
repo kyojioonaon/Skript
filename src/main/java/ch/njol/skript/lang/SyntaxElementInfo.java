@@ -30,7 +30,6 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 /**
- * @deprecated Use {@link SyntaxInfo}
  * @param <E> the syntax element this info is for
  */
 public class SyntaxElementInfo<E extends SyntaxElement> {

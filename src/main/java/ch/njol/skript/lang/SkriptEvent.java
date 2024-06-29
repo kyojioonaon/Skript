@@ -253,10 +253,7 @@ public abstract class SkriptEvent extends Structure {
 	/**
 	 * Fixes patterns in event by modifying every {@link ch.njol.skript.patterns.TypePatternElement}
 	 * to be nullable.
-	 * 
-	 * @deprecated Use {@link BukkitInfos#fixPattern(String)}
 	 */
-	@Deprecated
 	public static String fixPattern(String pattern) {
 		return BukkitInfos.fixPattern(pattern);
 	}
