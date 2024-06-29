@@ -114,7 +114,7 @@ import org.junit.After;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.skriptlang.skript.bukkit.registration.BukkitRegistryKeys;
-import org.skriptlang.skript.bukkit.registration.BukkitInfos;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos;
 import org.skriptlang.skript.lang.comparator.Comparator;
 import org.skriptlang.skript.lang.comparator.Comparators;
 import org.skriptlang.skript.lang.converter.Converter;
@@ -1596,9 +1596,9 @@ public final class Skript extends JavaPlugin implements Listener {
 	) {
 		checkAcceptRegistrations();
 		for (int i = 0; i < patterns.length; i++)
-			patterns[i] = BukkitInfos.fixPattern(patterns[i]);
+			patterns[i] = BukkitSyntaxInfos.fixPattern(patterns[i]);
 		SkriptEventInfo<E> legacy = new SkriptEventInfo<>(name, patterns, eventClass, "", events);
-		BukkitInfos.Event.Builder<?, E> builder = BukkitInfos.Event.builder(legacy.getElementClass(), name)
+		BukkitSyntaxInfos.Event.Builder<?, E> builder = BukkitSyntaxInfos.Event.builder(legacy.getElementClass(), name)
 				.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(legacy.getElementClass())))
 				.addPatterns(legacy.getPatterns())
 				.addEvents(legacy.events);

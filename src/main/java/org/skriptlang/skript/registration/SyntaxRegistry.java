@@ -108,6 +108,7 @@ public interface SyntaxRegistry extends ViewProvider<SyntaxRegistry>, Registry<S
 	 * Represents a syntax element type.
 	 * @param <I> The syntax type.
 	 */
+	@ApiStatus.Experimental
 	interface Key<I extends SyntaxInfo<?>> {
 
 		/**
@@ -132,6 +133,7 @@ public interface SyntaxRegistry extends ViewProvider<SyntaxRegistry>, Registry<S
 	 * @param <I> The child key's syntax type.
 	 * @param <P> The parent key's syntax type.
 	 */
+	@ApiStatus.Experimental
 	interface ChildKey<I extends P, P extends SyntaxInfo<?>> extends Key<I> {
 
 		/**

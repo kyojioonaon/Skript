@@ -6,7 +6,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import org.skriptlang.skript.bukkit.registration.BukkitInfos.Event;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos.Event;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.registration.SyntaxOrigin;
 import org.skriptlang.skript.util.Priority;
@@ -19,7 +19,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-final class BukkitInfosImpl {
+final class BukkitSyntaxInfosImpl {
 
 	static final class EventImpl<E extends SkriptEvent> implements Event<E> {
 

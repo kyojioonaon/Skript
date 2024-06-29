@@ -5,7 +5,7 @@ import ch.njol.skript.lang.SkriptEvent.ListeningBehavior;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import org.skriptlang.skript.bukkit.registration.BukkitInfosImpl.EventImpl;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfosImpl.EventImpl;
 import org.skriptlang.skript.registration.SyntaxInfo;
 
 import java.util.Collection;
@@ -14,9 +14,9 @@ import java.util.Collection;
  * A class containing the interfaces representing Bukkit-specific SyntaxInfo implementations.
  */
 @ApiStatus.Experimental
-public final class BukkitInfos {
+public final class BukkitSyntaxInfos {
 
-	private BukkitInfos() { }
+	private BukkitSyntaxInfos() { }
 
 	/**
 	 * A syntax info to be used for {@link SkriptEvent}s.

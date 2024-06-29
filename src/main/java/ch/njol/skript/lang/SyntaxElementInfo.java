@@ -21,7 +21,7 @@ package ch.njol.skript.lang;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.skriptlang.skript.bukkit.registration.BukkitInfos;
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos;
 import org.skriptlang.skript.registration.SyntaxInfo;
 import org.skriptlang.skript.lang.structure.StructureInfo;
 
@@ -85,8 +85,8 @@ public class SyntaxElementInfo<E extends SyntaxElement> {
 	@ApiStatus.Experimental
 	@SuppressWarnings("unchecked")
 	public static <I extends SyntaxElementInfo<E>, E extends SyntaxElement> I fromModern(SyntaxInfo<? extends E> info) {
-		if (info instanceof BukkitInfos.Event) {
-			BukkitInfos.Event<?> event = (BukkitInfos.Event<?>) info;
+		if (info instanceof BukkitSyntaxInfos.Event) {
+			BukkitSyntaxInfos.Event<?> event = (BukkitSyntaxInfos.Event<?>) info;
 
 			// We must first go back to the raw input
 			String rawName = event.name().startsWith("On ")
@@ -121,6 +121,7 @@ public class SyntaxElementInfo<E extends SyntaxElement> {
 	}
 	
 	@Contract("_ -> new")
+	@ApiStatus.Experimental
 	private static <E extends Expression<R>, R> ExpressionInfo<E, R> fromModernExpression(SyntaxInfo.Expression<E, R> info) {
 		return new ExpressionInfo<>(
 				info.patterns().toArray(new String[0]), info.returnType(),

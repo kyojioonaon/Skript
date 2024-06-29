@@ -1,5 +1,7 @@
 package org.skriptlang.skript.util;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -8,6 +10,7 @@ import java.util.Iterator;
  * It is up to individual implementations as to how they may be modified.
  * @param <T> The type of elements stored in a registry.
  */
+@ApiStatus.Experimental
 public interface Registry<T> extends Iterable<T> {
 
 	/**
