@@ -34,7 +34,7 @@ class SkriptAddonImpl {
 
 		@Override
 		public void loadModules(AddonModule... modules) {
-			throw new UnsupportedOperationException("Modules cannot be loaded with an unmodifiable addon.");
+			throw new UnsupportedOperationException("Cannot load modules using an unmodifiable addon.");
 		}
 
 	}

@@ -2,6 +2,7 @@ package org.skriptlang.skript.registration;
 
 import ch.njol.skript.lang.SyntaxElement;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -27,18 +28,12 @@ class SyntaxInfoImpl<T extends SyntaxElement> implements SyntaxInfo<T> {
 		SyntaxOrigin origin, Class<T> type, @Nullable Supplier<T> supplier,
 		Collection<String> patterns, Priority priority
 	) {
-		if (supplier == null && !ClassUtils.isNormalClass(type)) {
-			throw new IllegalArgumentException(
+		Preconditions.checkArgument(supplier != null || ClassUtils.isNormalClass(type),
 				"Failed to register a syntax info for '" + type.getName() + "'."
-					+ " Element classes must be a normal type unless a supplier is provided."
-			);
-		}
-		if (patterns.isEmpty()) {
-			throw new IllegalArgumentException(
+				+ " Element classes must be a normal type unless a supplier is provided.");
+		Preconditions.checkArgument(!patterns.isEmpty(),
 				"Failed to register a syntax info for '" + type.getName() + "'."
-					+ " There must be at least one pattern."
-			);
-		}
+				+ " There must be at least one pattern.");
 		this.origin = origin;
 		this.type = type;
 		this.supplier = supplier;

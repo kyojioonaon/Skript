@@ -65,7 +65,7 @@ public class Language {
 	@Nullable
 	private static HashMap<String, String> localizedLanguage = null;
 	
-	private static final HashMap<SkriptAddon, Version> langVersion = new HashMap<>();
+	private static final HashMap<String, Version> langVersion = new HashMap<>();
 	
 	public static String getName() {
 		return name;
@@ -236,7 +236,7 @@ public class Language {
 			if (v == null)
 				Skript.warning("Missing version in default.lang");
 
-			langVersion.put(addon, v == null ? Skript.getVersion() : new Version(v));
+			langVersion.put(addon.name(), v == null ? Skript.getVersion() : new Version(v));
 			def.remove("version");
 			defaultLanguage.putAll(def);
 
@@ -322,7 +322,7 @@ public class Language {
 		} else {
 			try {
 				Version v = new Version("" + l.get("version"));
-				Version lv = langVersion.get(addon);
+				Version lv = langVersion.get(addon.name());
 				assert lv != null; // set in loadDefault()
 				if (v.isSmallerThan(lv))
 					Skript.warning(addon + "'s language file " + name + ".lang is outdated, some messages will be english.");

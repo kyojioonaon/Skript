@@ -1,6 +1,5 @@
 package org.skriptlang.skript;
 
-import ch.njol.util.NonNullPair;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
@@ -15,17 +14,14 @@ import java.util.Collection;
 public interface Skript extends SkriptAddon {
 
 	/**
-	 * This implementation makes use of default implementations of required classes.
-	 * Note that the default implementation is designed to prevent users from interacting directly with its addon components.
-	 * That is, something like <code>skript.registry()</code> will return an unmodifiable view of the registry.
-	 * As a result, this method also returns the modifiable addon backing the implementation.
-	 * @param name The name for this Skript instance to use.
-	 * @return A pair containing a default Skript implementation and the modifiable addon backing it.
+	 * Constructs a default implementation of a Skript.
+	 * It makes use of the default implementations of required components.
+	 * @param name The name for the Skript to use.
+	 * @return A Skript.
 	 */
 	@Contract("_ -> new")
-	static NonNullPair<Skript, SkriptAddon> createInstance(String name) {
-		SkriptImpl skript = new SkriptImpl(name);
-		return new NonNullPair<>(skript, skript.addon);
+	static Skript of(String name) {
+		return new SkriptImpl(name);
 	}
 
 	/**
@@ -37,8 +33,20 @@ public interface Skript extends SkriptAddon {
 
 	/**
 	 * @return An unmodifiable snapshot of addons currently registered with this Skript.
-	 * It is not guaranteed that the individual addons will be modifiable (see {@link SkriptAddon#unmodifiableView()}).
 	 */
 	@Unmodifiable Collection<SkriptAddon> addons();
+
+	/**
+	 * Constructs an unmodifiable view of this Skript.
+	 * That is, the returned Skript will be unable to register new addons
+	 *  and the individual addons from {@link #addons()} will be unmodifiable.
+	 * Additionally, it will return unmodifiable views of its inherited {@link SkriptAddon} components.
+	 * @return An unmodifiable view of this Skript.
+	 */
+	@Override
+	@Contract("-> new")
+	default Skript unmodifiableView() {
+		return new SkriptImpl.UnmodifiableSkript(this);
+	}
 
 }

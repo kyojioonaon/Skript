@@ -2,7 +2,6 @@ package org.skriptlang.skript;
 
 import ch.njol.skript.SkriptAPIException;
 import com.google.common.collect.ImmutableSet;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.skriptlang.skript.addon.AddonModule;
@@ -19,16 +18,10 @@ final class SkriptImpl implements Skript {
 	/**
 	 * The addon instance backing this Skript.
 	 */
-	final SkriptAddon addon;
-
-	/**
-	 * The result of {@link SkriptAddon#unmodifiableView()} for {@link #addon}.
-	 */
-	private final SkriptAddon unmodifiableAddon;
+	private final SkriptAddon addon;
 
 	SkriptImpl(String name) {
 		addon = new SkriptAddonImpl(name, SyntaxRegistry.empty(), Localizer.of(this));
-		unmodifiableAddon = addon.unmodifiableView();
 	}
 
 	//
@@ -49,7 +42,7 @@ final class SkriptImpl implements Skript {
 		}
 
 		SkriptAddon addon = new SkriptAddonImpl(name, this.addon.syntaxRegistry(), null);
-		addons.add(addon.unmodifiableView());
+		addons.add(addon);
 		return addon;
 	}
 
@@ -64,28 +57,22 @@ final class SkriptImpl implements Skript {
 
 	@Override
 	public String name() {
-		return unmodifiableAddon.name();
+		return addon.name();
 	}
 
 	@Override
 	public SyntaxRegistry syntaxRegistry() {
-		return unmodifiableAddon.syntaxRegistry();
+		return addon.syntaxRegistry();
 	}
 
 	@Override
 	public Localizer localizer() {
-		return unmodifiableAddon.localizer();
+		return addon.localizer();
 	}
 
 	@Override
 	public void loadModules(AddonModule... modules) {
-		unmodifiableAddon.loadModules(modules);
-	}
-
-	@Override
-	@Contract("-> fail")
-	public SkriptAddon unmodifiableView() {
-		throw new UnsupportedOperationException("Creating an unmodifiable view of a Skript is not supported.");
+		addon.loadModules(modules);
 	}
 
 	private static final class SkriptAddonImpl implements SkriptAddon {
@@ -115,6 +102,49 @@ final class SkriptImpl implements Skript {
 			return localizer;
 		}
 
+	}
+
+	static final class UnmodifiableSkript implements Skript {
+
+		private final Skript skript;
+
+		UnmodifiableSkript(Skript skript) {
+			this.skript = skript;
+		}
+
+		@Override
+		public SkriptAddon registerAddon(String name) {
+			throw new UnsupportedOperationException("Cannot register addons using an unmodifiable Skript.");
+		}
+
+		@Override
+		public @Unmodifiable Collection<SkriptAddon> addons() {
+			ImmutableSet.Builder<SkriptAddon> addons = ImmutableSet.builder();
+			skript.addons().stream()
+					.map(SkriptAddon::unmodifiableView)
+					.forEach(addons::add);
+			return addons.build();
+		}
+
+		@Override
+		public String name() {
+			return skript.name();
+		}
+
+		@Override
+		public SyntaxRegistry syntaxRegistry() {
+			return skript.syntaxRegistry().unmodifiableView();
+		}
+
+		@Override
+		public Localizer localizer() {
+			return skript.localizer().unmodifiableView();
+		}
+
+		@Override
+		public void loadModules(AddonModule... modules) {
+			throw new UnsupportedOperationException("Cannot load modules using an unmodifiable Skript.");
+		}
 	}
 
 }

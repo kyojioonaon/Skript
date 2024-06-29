@@ -81,7 +81,6 @@ import ch.njol.skript.util.chat.ChatMessages;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Closeable;
 import ch.njol.util.Kleenean;
-import ch.njol.util.NonNullPair;
 import ch.njol.util.StringUtils;
 import ch.njol.util.coll.iterator.CheckedIterator;
 import ch.njol.util.coll.iterator.EnumerationIterable;
@@ -199,9 +198,8 @@ public final class Skript extends JavaPlugin implements Listener {
 	@Nullable
 	private static Skript instance = null;
 
-	private static org.skriptlang.skript.@Nullable Skript skript = null;
-	@SuppressWarnings("NotNullFieldNotInitialized")
-	private static SyntaxRegistry skriptRegistry;
+	private static org.skriptlang.skript.@UnknownNullability Skript skript = null;
+	private static org.skriptlang.skript.@UnknownNullability Skript unmodifiableSkript = null;
 
 	private static boolean disabled = false;
 	private static boolean partDisabled = false;
@@ -214,10 +212,10 @@ public final class Skript extends JavaPlugin implements Listener {
 
 	@ApiStatus.Experimental
 	public static org.skriptlang.skript.Skript instance() {
-		if (skript == null) {
+		if (unmodifiableSkript == null) {
 			throw new SkriptAPIException("Skript is still initializing");
 		}
-		return skript;
+		return unmodifiableSkript;
 	}
 
 	/**
@@ -498,11 +496,9 @@ public final class Skript extends JavaPlugin implements Listener {
 		}
 
 		// initialize the modern Skript instance
-		NonNullPair<org.skriptlang.skript.Skript, org.skriptlang.skript.addon.SkriptAddon> skriptPair =
-			org.skriptlang.skript.Skript.createInstance(this.getName());
-		skript = skriptPair.getFirst();
-		skriptRegistry = skriptPair.getSecond().syntaxRegistry();
-		skriptPair.getSecond().localizer().setSourceDirectories(
+		skript = org.skriptlang.skript.Skript.of(this.getName());
+		unmodifiableSkript = skript.unmodifiableView();
+		skript.localizer().setSourceDirectories(
 			getClass(),
 			"lang",
 			getDataFolder().getAbsolutePath() + "lang"
@@ -1448,7 +1444,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 */
 	public static <E extends Condition> void registerCondition(Class<E> conditionClass, String... patterns) throws IllegalArgumentException {
 		checkAcceptRegistrations();
-		skriptRegistry.register(SyntaxRegistry.CONDITION, SyntaxInfo.builder(conditionClass)
+		skript.syntaxRegistry().register(SyntaxRegistry.CONDITION, SyntaxInfo.builder(conditionClass)
 				.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(conditionClass)))
 				.addPatterns(patterns)
 				.build()
@@ -1463,7 +1459,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 */
 	public static <E extends Effect> void registerEffect(Class<E> effectClass, String... patterns) throws IllegalArgumentException {
 		checkAcceptRegistrations();
-		skriptRegistry.register(SyntaxRegistry.EFFECT, SyntaxInfo.builder(effectClass)
+		skript.syntaxRegistry().register(SyntaxRegistry.EFFECT, SyntaxInfo.builder(effectClass)
 				.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(effectClass)))
 				.addPatterns(patterns)
 				.build()
@@ -1479,7 +1475,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	 */
 	public static <E extends Section> void registerSection(Class<E> sectionClass, String... patterns) throws IllegalArgumentException {
 		checkAcceptRegistrations();
-		skriptRegistry.register(SyntaxRegistry.SECTION, SyntaxInfo.builder(sectionClass)
+		skript.syntaxRegistry().register(SyntaxRegistry.SECTION, SyntaxInfo.builder(sectionClass)
 				.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(sectionClass)))
 				.addPatterns(patterns)
 				.build()
@@ -1533,7 +1529,7 @@ public final class Skript extends JavaPlugin implements Listener {
 		Class<E> expressionType, Class<T> returnType, ExpressionType type, String... patterns
 	) throws IllegalArgumentException {
 		checkAcceptRegistrations();
-		skriptRegistry.register(SyntaxRegistry.EXPRESSION, SyntaxInfo.Expression.builder(expressionType)
+		skript.syntaxRegistry().register(SyntaxRegistry.EXPRESSION, SyntaxInfo.Expression.builder(expressionType)
 				.returnType(returnType)
 				.priority(type.priority())
 				.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(expressionType)))
@@ -1614,13 +1610,13 @@ public final class Skript extends JavaPlugin implements Listener {
 			builder.addKeywords(legacy.getKeywords());
 		if (legacy.getRequiredPlugins() != null)
 			builder.addRequiredPlugins(legacy.getRequiredPlugins());
-		skriptRegistry.register(BukkitRegistryKeys.EVENT, builder.build());
+		skript.syntaxRegistry().register(BukkitRegistryKeys.EVENT, builder.build());
 		return legacy;
 	}
 
 	public static <E extends Structure> void registerStructure(Class<E> structureClass, String... patterns) {
 		checkAcceptRegistrations();
-		skriptRegistry.register(SyntaxRegistry.STRUCTURE, SyntaxInfo.Structure.builder(structureClass)
+		skript.syntaxRegistry().register(SyntaxRegistry.STRUCTURE, SyntaxInfo.Structure.builder(structureClass)
 				.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(structureClass)))
 				.addPatterns(patterns)
 				.build()
@@ -1629,7 +1625,7 @@ public final class Skript extends JavaPlugin implements Listener {
 
 	public static <E extends Structure> void registerSimpleStructure(Class<E> structureClass, String... patterns) {
 		checkAcceptRegistrations();
-		skriptRegistry.register(SyntaxRegistry.STRUCTURE, SyntaxInfo.Structure.builder(structureClass)
+		skript.syntaxRegistry().register(SyntaxRegistry.STRUCTURE, SyntaxInfo.Structure.builder(structureClass)
 			.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(structureClass)))
 			.addPatterns(patterns)
 			.nodeType(SyntaxInfo.Structure.NodeType.SIMPLE)
@@ -1641,7 +1637,7 @@ public final class Skript extends JavaPlugin implements Listener {
 		Class<E> structureClass, EntryValidator entryValidator, String... patterns
 	) {
 		checkAcceptRegistrations();
-		skriptRegistry.register(SyntaxRegistry.STRUCTURE, SyntaxInfo.Structure.builder(structureClass)
+		skript.syntaxRegistry().register(SyntaxRegistry.STRUCTURE, SyntaxInfo.Structure.builder(structureClass)
 				.origin(getSyntaxOrigin(JavaPlugin.getProvidingPlugin(structureClass)))
 				.addPatterns(patterns)
 				.entryValidator(entryValidator)

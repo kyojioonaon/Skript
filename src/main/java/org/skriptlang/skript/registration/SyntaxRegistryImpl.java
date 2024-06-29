@@ -69,12 +69,12 @@ final class SyntaxRegistryImpl implements SyntaxRegistry {
 
 		@Override
 		public <I extends SyntaxInfo<?>> void register(Key<I> key, I info) {
-			throw new UnsupportedOperationException("An unmodifiable registry cannot have syntax infos added.");
+			throw new UnsupportedOperationException("Cannot register syntax infos with an unmodifiable syntax registry.");
 		}
 
 		@Override
 		public <I extends SyntaxInfo<?>> void unregister(Key<I> key, I info) {
-			throw new UnsupportedOperationException("An unmodifiable registry cannot have syntax infos removed.");
+			throw new UnsupportedOperationException("Cannot unregister syntax infos from an unmodifiable syntax registry.");
 		}
 
 	}

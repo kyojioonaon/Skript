@@ -58,7 +58,7 @@ final class LocalizerImpl implements Localizer {
 
 		@Override
 		public void setSourceDirectories(Class<?> source, String languageFileDirectory, @Nullable String dataFileDirectory) {
-			throw new UnsupportedOperationException("An unmodifiable localizer cannot have translations added.");
+			throw new UnsupportedOperationException("Cannot set the source directories of an unmodifiable Localizer.");
 		}
 
 		@Override
