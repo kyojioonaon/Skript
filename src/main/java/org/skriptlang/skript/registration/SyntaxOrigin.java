@@ -31,7 +31,7 @@ public interface SyntaxOrigin {
 		private final SkriptAddon addon;
 
 		private AddonOrigin(SkriptAddon addon) {
-			this.addon = SkriptAddon.unmodifiableView(addon);
+			this.addon = addon.unmodifiableView();
 		}
 
 		/**
@@ -45,7 +45,7 @@ public interface SyntaxOrigin {
 
 		/**
 		 * @return An unmodifiable view of the addon this origin describes.
-		 * @see SkriptAddon#unmodifiableView(SkriptAddon) 
+		 * @see SkriptAddon#unmodifiableView()
 		 */
 		@UnmodifiableView
 		public SkriptAddon addon() {

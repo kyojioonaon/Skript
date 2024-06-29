@@ -8,9 +8,9 @@ import ch.njol.skript.lang.Statement;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jetbrains.annotations.UnmodifiableView;
 import org.skriptlang.skript.lang.structure.Structure;
 import org.skriptlang.skript.util.Registry;
+import org.skriptlang.skript.util.ViewProvider;
 
 import java.util.Collection;
 
@@ -18,7 +18,7 @@ import java.util.Collection;
  * A syntax registry manages all {@link SyntaxRegister}s for syntax registration.
  */
 @ApiStatus.Experimental
-public interface SyntaxRegistry extends Registry<SyntaxInfo<?>> {
+public interface SyntaxRegistry extends ViewProvider<SyntaxRegistry>, Registry<SyntaxInfo<?>> {
 
 	/**
 	 * A key representing the built-in {@link Structure} syntax element.
@@ -62,26 +62,6 @@ public interface SyntaxRegistry extends Registry<SyntaxInfo<?>> {
 	}
 
 	/**
-	 * Constructs an unmodifiable view of a syntax registry.
-	 * That is, the returned registry will not allow (un)registrations.
-	 * @param registry The registry backing this unmodifiable view.
-	 * @return An unmodifiable view of <code>registry</code>.
-	 */
-	@Contract("_ -> new")
-	@UnmodifiableView
-	static SyntaxRegistry unmodifiableView(SyntaxRegistry registry) {
-		return new SyntaxRegistryImpl.UnmodifiableRegistry(registry);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @return An unmodifiable snapshot of all syntaxes registered.
-	 */
-	@Override
-	@Unmodifiable
-	Collection<SyntaxInfo<?>> elements();
-
-	/**
 	 * A method to obtain all syntaxes registered under a certain key.
 	 * @param key The key to obtain syntaxes from.
 	 * @return An unmodifiable snapshot of all syntaxes registered under <code>key</code>.
@@ -105,6 +85,24 @@ public interface SyntaxRegistry extends Registry<SyntaxInfo<?>> {
 	 * @param <I> The syntax type.
 	 */
 	<I extends SyntaxInfo<?>> void unregister(Key<I> key, I info);
+
+	/**
+	 * Constructs an unmodifiable view of this syntax registry.
+	 * That is, the returned registry will not allow registrations.
+	 * @return An unmodifiable view of this syntax registry.
+	 */
+	@Override
+	@Contract("-> new")
+	default SyntaxRegistry unmodifiableView() {
+		return new SyntaxRegistryImpl.UnmodifiableRegistry(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @return An unmodifiable snapshot of all syntaxes registered.
+	 */
+	@Override
+	@Unmodifiable Collection<SyntaxInfo<?>> elements();
 
 	/**
 	 * Represents a syntax element type.

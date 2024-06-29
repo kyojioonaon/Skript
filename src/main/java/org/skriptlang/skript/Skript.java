@@ -37,7 +37,7 @@ public interface Skript extends SkriptAddon {
 
 	/**
 	 * @return An unmodifiable snapshot of addons currently registered with this Skript.
-	 * It is not guaranteed that the individual addons will be modifiable (see {@link SkriptAddon#unmodifiableView(SkriptAddon)}).
+	 * It is not guaranteed that the individual addons will be modifiable (see {@link SkriptAddon#unmodifiableView()}).
 	 */
 	@Unmodifiable
 	Collection<SkriptAddon> addons();

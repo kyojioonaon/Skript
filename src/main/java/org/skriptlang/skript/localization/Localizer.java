@@ -3,8 +3,8 @@ package org.skriptlang.skript.localization;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
 import org.skriptlang.skript.addon.SkriptAddon;
+import org.skriptlang.skript.util.ViewProvider;
 
 /**
  * A Localizer is used for the localization of translatable strings.
@@ -15,7 +15,7 @@ import org.skriptlang.skript.addon.SkriptAddon;
  * @see ch.njol.skript.localization.Language
  */
 @ApiStatus.Experimental
-public interface Localizer {
+public interface Localizer extends ViewProvider<Localizer> {
 
 	/**
 	 * @param addon The addon this localizer is localizing for.
@@ -24,18 +24,6 @@ public interface Localizer {
 	@Contract("_ -> new")
 	static Localizer of(SkriptAddon addon) {
 		return new LocalizerImpl(addon);
-	}
-
-	/**
-	 * Constructs an unmodifiable view of a localizer.
-	 * That is, the localizer may not have any new translations added.
-	 * @param localizer The localizer backing this unmodifiable view.
-	 * @return An unmodifiable view of <code>localizer</code>.
-	 */
-	@Contract("_ -> new")
-	@UnmodifiableView
-	static Localizer unmodifiableView(Localizer localizer) {
-		return new LocalizerImpl.UnmodifiableLocalizer(localizer);
 	}
 
 	/**
@@ -73,5 +61,16 @@ public interface Localizer {
 	 */
 	@Nullable
 	String translate(String key);
+
+	/**
+	 * Constructs an unmodifiable view of this localizer.
+	 * That is, no new translations may be added.
+	 * @return An unmodifiable view of this localizer.
+	 */
+	@Override
+	@Contract("-> new")
+	default Localizer unmodifiableView() {
+		return new LocalizerImpl.UnmodifiableLocalizer(this);
+	}
 
 }

@@ -13,8 +13,8 @@ class SkriptAddonImpl {
 
 		UnmodifiableAddon(SkriptAddon addon) {
 			this.addon = addon;
-			this.unmodifiableRegistry = SyntaxRegistry.unmodifiableView(addon.syntaxRegistry());
-			this.unmodifiableLocalizer = Localizer.unmodifiableView(addon.localizer());
+			this.unmodifiableRegistry = addon.syntaxRegistry().unmodifiableView();
+			this.unmodifiableLocalizer = addon.localizer().unmodifiableView();
 		}
 
 		@Override

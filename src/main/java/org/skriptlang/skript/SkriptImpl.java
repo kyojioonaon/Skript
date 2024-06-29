@@ -2,9 +2,9 @@ package org.skriptlang.skript;
 
 import ch.njol.skript.SkriptAPIException;
 import com.google.common.collect.ImmutableSet;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jetbrains.annotations.UnmodifiableView;
 import org.skriptlang.skript.addon.AddonModule;
 import org.skriptlang.skript.addon.SkriptAddon;
 import org.skriptlang.skript.localization.Localizer;
@@ -22,13 +22,13 @@ final class SkriptImpl implements Skript {
 	final SkriptAddon addon;
 
 	/**
-	 * {@link SkriptAddon#unmodifiableView(SkriptAddon)} of {@link #addon}.
+	 * The result of {@link SkriptAddon#unmodifiableView()} for {@link #addon}.
 	 */
 	private final SkriptAddon unmodifiableAddon;
 
 	SkriptImpl(String name) {
 		addon = new SkriptAddonImpl(name, SyntaxRegistry.empty(), Localizer.of(this));
-		unmodifiableAddon = SkriptAddon.unmodifiableView(addon);
+		unmodifiableAddon = addon.unmodifiableView();
 	}
 
 	//
@@ -49,7 +49,7 @@ final class SkriptImpl implements Skript {
 		}
 
 		SkriptAddon addon = new SkriptAddonImpl(name, this.addon.syntaxRegistry(), null);
-		addons.add(SkriptAddon.unmodifiableView(addon));
+		addons.add(addon.unmodifiableView());
 		return addon;
 	}
 
@@ -69,7 +69,6 @@ final class SkriptImpl implements Skript {
 	}
 
 	@Override
-	@UnmodifiableView
 	public SyntaxRegistry syntaxRegistry() {
 		return unmodifiableAddon.syntaxRegistry();
 	}
@@ -82,6 +81,12 @@ final class SkriptImpl implements Skript {
 	@Override
 	public void loadModules(AddonModule... modules) {
 		unmodifiableAddon.loadModules(modules);
+	}
+
+	@Override
+	@Contract("-> fail")
+	public SkriptAddon unmodifiableView() {
+		throw new UnsupportedOperationException("Creating an unmodifiable view of a Skript is not supported.");
 	}
 
 	private static final class SkriptAddonImpl implements SkriptAddon {
