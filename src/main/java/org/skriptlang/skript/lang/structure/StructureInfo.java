@@ -20,6 +20,7 @@ package org.skriptlang.skript.lang.structure;
 
 import ch.njol.skript.lang.SyntaxElementInfo;
 import org.eclipse.jdt.annotation.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 import org.skriptlang.skript.lang.entry.EntryValidator;
 import org.skriptlang.skript.registration.SyntaxInfo;
 
@@ -36,6 +37,7 @@ public class StructureInfo<E extends Structure> extends SyntaxElementInfo<E> {
 	 */
 	public final boolean simple;
 
+	@ApiStatus.Experimental
 	public final SyntaxInfo.Structure.NodeType nodeType;
 
 	public StructureInfo(String[] patterns, Class<E> c, String originClassPath) throws IllegalArgumentException {
@@ -50,6 +52,7 @@ public class StructureInfo<E extends Structure> extends SyntaxElementInfo<E> {
 		this(patterns, elementClass, originClassPath, entryValidator, SyntaxInfo.Structure.NodeType.SECTION);
 	}
 
+	@ApiStatus.Experimental
 	public StructureInfo(String[] patterns, Class<E> elementClass, String originClassPath,
 						 @Nullable EntryValidator entryValidator, SyntaxInfo.Structure.NodeType nodeType) throws IllegalArgumentException {
 		super(patterns, elementClass, originClassPath);

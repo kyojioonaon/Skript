@@ -19,6 +19,7 @@
 package ch.njol.skript.lang;
 
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.skriptlang.skript.bukkit.registration.BukkitInfos;
 import org.skriptlang.skript.registration.SyntaxInfo;
@@ -79,9 +80,10 @@ public class SyntaxElementInfo<E extends SyntaxElement> {
 	public String getOriginClassPath() {
 		return originClassPath;
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	@Contract("_ -> new")
+	@ApiStatus.Experimental
+	@SuppressWarnings("unchecked")
 	public static <I extends SyntaxElementInfo<E>, E extends SyntaxElement> I fromModern(SyntaxInfo<? extends E> info) {
 		if (info instanceof BukkitInfos.Event) {
 			BukkitInfos.Event<?> event = (BukkitInfos.Event<?>) info;

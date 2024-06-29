@@ -30,6 +30,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import ch.njol.skript.util.Utils;
 import ch.njol.skript.util.Version;
+import org.jetbrains.annotations.ApiStatus;
 import org.skriptlang.skript.localization.Localizer;
 import org.skriptlang.skript.registration.SyntaxRegistry;
 
@@ -130,6 +131,7 @@ public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 	//
 
 	@Nullable
+	@ApiStatus.Experimental
 	static SkriptAddon fromModern(org.skriptlang.skript.addon.SkriptAddon addon) {
 		Class<?> source = addon.localizer().source();
 		if (source != null) // using source would be most accurate
@@ -141,16 +143,19 @@ public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 	}
 
 	@Override
+	@ApiStatus.Experimental
 	public String name() {
 		return addon.name();
 	}
 
 	@Override
+	@ApiStatus.Experimental
 	public SyntaxRegistry syntaxRegistry() {
 		return addon.syntaxRegistry();
 	}
 
 	@Override
+	@ApiStatus.Experimental
 	public Localizer localizer() {
 		return addon.localizer();
 	}
