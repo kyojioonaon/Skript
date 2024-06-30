@@ -29,17 +29,11 @@ public interface Localizer extends ViewProvider<Localizer> {
 	/**
 	 * Sets the language file directories for this localizer.
 	 * This method will initiate a loading of any language files in the provided directories.
-	 * @param source A class to be used for loading resources from the jar.
 	 * @param languageFileDirectory The path to the directory on the jar containing language files.
 	 * @param dataFileDirectory The path to the directory on the disk containing language files.
 	 * For example, this may include language files that have been saved to enable user customization.
 	 */
-	void setSourceDirectories(Class<?> source, String languageFileDirectory, @Nullable String dataFileDirectory);
-
-	/**
-	 * @return A class to be used for loading resources from the jar.
-	 */
-	@Nullable Class<?> source();
+	void setSourceDirectories(String languageFileDirectory, @Nullable String dataFileDirectory);
 
 	/**
 	 * @return The path to the directory on the jar containing language files.

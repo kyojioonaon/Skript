@@ -498,11 +498,8 @@ public final class Skript extends JavaPlugin implements Listener {
 		// initialize the modern Skript instance
 		skript = org.skriptlang.skript.Skript.of(getClass(), getName());
 		unmodifiableSkript = skript.unmodifiableView();
-		skript.localizer().setSourceDirectories(
-			getClass(),
-			"lang",
-			getDataFolder().getAbsolutePath() + "lang"
-		);
+		skript.localizer().setSourceDirectories("lang",
+				getDataFolder().getAbsolutePath() + "lang");
 		// initialize the old Skript SkriptAddon instance
 		getAddonInstance();
 

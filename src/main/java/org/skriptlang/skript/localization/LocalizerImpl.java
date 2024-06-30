@@ -13,24 +13,17 @@ final class LocalizerImpl implements Localizer {
 		this.addon = addon;
 	}
 
-	private Class<?> source;
 	private String languageFileDirectory;
 	private String dataFileDirectory;
 
 	@Override
-	public void setSourceDirectories(Class<?> source, String languageFileDirectory, @Nullable String dataFileDirectory) {
-		if (this.source != null) {
+	public void setSourceDirectories(String languageFileDirectory, @Nullable String dataFileDirectory) {
+		if (this.languageFileDirectory != null) {
 			throw new SkriptAPIException("A localizer's source directories may only be set once.");
 		}
-		this.source = source;
 		this.languageFileDirectory = languageFileDirectory;
 		this.dataFileDirectory = dataFileDirectory;
 		Language.loadDefault(addon);
-	}
-
-	@Override
-	public @Nullable Class<?> source() {
-		return source;
 	}
 
 	@Override
@@ -57,13 +50,8 @@ final class LocalizerImpl implements Localizer {
 		}
 
 		@Override
-		public void setSourceDirectories(Class<?> source, String languageFileDirectory, @Nullable String dataFileDirectory) {
+		public void setSourceDirectories(String languageFileDirectory, @Nullable String dataFileDirectory) {
 			throw new UnsupportedOperationException("Cannot set the source directories of an unmodifiable Localizer.");
-		}
-
-		@Override
-		public @Nullable Class<?> source() {
-			return localizer.source();
 		}
 
 		@Override

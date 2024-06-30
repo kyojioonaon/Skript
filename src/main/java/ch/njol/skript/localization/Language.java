@@ -211,7 +211,7 @@ public class Language {
 			return;
 		}
 
-		Class<?> source = addon.localizer().source();
+		Class<?> source = addon.source();
 		assert source != null; // getSanitizedLanguageDirectory call means source should not be null
 		try (
 			InputStream defaultIs = source.getResourceAsStream("/" + languageFileDirectory + "/default.lang");
@@ -283,8 +283,7 @@ public class Language {
 			return false;
 		}
 
-		Class<?> source = addon.localizer().source();
-		assert source != null; // getSanitizedLanguageDirectory call means source should not be null
+		Class<?> source = addon.source();
 
 		// Backwards addon compatibility
 		if (name.equals("english")) {

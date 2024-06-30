@@ -102,7 +102,7 @@ public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 	 * @return This SkriptAddon
 	 */
 	public SkriptAddon setLanguageFileDirectory(String directory) {
-		localizer().setSourceDirectories(plugin.getClass(), directory, plugin.getDataFolder().getAbsolutePath() + directory);
+		localizer().setSourceDirectories(directory, plugin.getDataFolder().getAbsolutePath() + directory);
 		return this;
 	}
 
