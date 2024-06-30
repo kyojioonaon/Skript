@@ -42,7 +42,7 @@ public class EvtHealing extends SkriptEvent {
 								"\theal reason is healing potion",
 								"\tcancel event"
 				)
-				.since("1.0, INSERT VERSION (by entity)");
+				.since("1.0, INSERT VERSION (by reason)");
 	}
 
 	@Nullable
