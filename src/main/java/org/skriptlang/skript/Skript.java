@@ -46,7 +46,7 @@ public interface Skript extends SkriptAddon {
 	@Override
 	@Contract("-> new")
 	default Skript unmodifiableView() {
-		return new SkriptImpl.UnmodifiableSkript(this);
+		return new SkriptImpl.UnmodifiableSkript(this, SkriptAddon.super.unmodifiableView());
 	}
 
 }

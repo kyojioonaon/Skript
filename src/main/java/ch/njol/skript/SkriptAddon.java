@@ -20,6 +20,7 @@ package ch.njol.skript;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +34,7 @@ import ch.njol.skript.util.Version;
 import org.jetbrains.annotations.ApiStatus;
 import org.skriptlang.skript.localization.Localizer;
 import org.skriptlang.skript.registration.SyntaxRegistry;
+import org.skriptlang.skript.util.Registry;
 
 /**
  * Utility class for Skript addons. Use {@link Skript#registerAddon(JavaPlugin)} to create a SkriptAddon instance for your plugin.
@@ -130,9 +132,8 @@ public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 	// Modern SkriptAddon Compatibility
 	//
 
-	@Nullable
 	@ApiStatus.Experimental
-	static SkriptAddon fromModern(org.skriptlang.skript.addon.SkriptAddon addon) {
+	static @Nullable SkriptAddon fromModern(org.skriptlang.skript.addon.SkriptAddon addon) {
 		Class<?> source = addon.localizer().source();
 		if (source != null) // using source would be most accurate
 			return new SkriptAddon(JavaPlugin.getProvidingPlugin(source), addon);
@@ -146,6 +147,36 @@ public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 	@ApiStatus.Experimental
 	public String name() {
 		return addon.name();
+	}
+
+	@Override
+	@ApiStatus.Experimental
+	public <R extends Registry<?>> void storeRegistry(Class<R> registryClass, R registry) {
+		addon.storeRegistry(registryClass, registry);
+	}
+
+	@Override
+	@ApiStatus.Experimental
+	public void removeRegistry(Class<? extends Registry<?>> registryClass) {
+		addon.removeRegistry(registryClass);
+	}
+
+	@Override
+	@ApiStatus.Experimental
+	public boolean hasRegistry(Class<? extends Registry<?>> registryClass) {
+		return addon.hasRegistry(registryClass);
+	}
+
+	@Override
+	@ApiStatus.Experimental
+	public <R extends Registry<?>> R registry(Class<R> registryClass) {
+		return addon.registry(registryClass);
+	}
+
+	@Override
+	@ApiStatus.Experimental
+	public <R extends Registry<?>> R registry(Class<R> registryClass, Supplier<R> putIfAbsent) {
+		return addon.registry(registryClass, putIfAbsent);
 	}
 
 	@Override
