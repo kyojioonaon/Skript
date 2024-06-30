@@ -12,10 +12,16 @@ import java.util.function.Supplier;
 
 /**
  * A Skript addon is an extension to Skript that expands its features.
- * Typically, an addon instance may be obtained through {@link Skript#registerAddon(String)}.
+ * Typically, an addon instance may be obtained through {@link Skript#registerAddon(Class, String)}.
  */
 @ApiStatus.Experimental
 public interface SkriptAddon extends ViewProvider<SkriptAddon> {
+
+	/**
+	 * @return A class from the application that registered this addon.
+	 * Typically, this is the main class or the specific class in which registration occurred.
+	 */
+	Class<?> source();
 
 	/**
 	 * @return The name of this addon.

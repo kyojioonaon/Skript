@@ -24,8 +24,8 @@ final class SkriptImpl implements Skript {
 	 */
 	private final SkriptAddon addon;
 
-	SkriptImpl(String name) {
-		addon = new SkriptAddonImpl(this, name, Localizer.of(this));
+	SkriptImpl(Class<?> source, String name) {
+		addon = new SkriptAddonImpl(this, source, name, Localizer.of(this));
 		storeRegistry(SyntaxRegistry.class, SyntaxRegistry.empty());
 	}
 
@@ -72,17 +72,17 @@ final class SkriptImpl implements Skript {
 	private static final Set<SkriptAddon> addons = new HashSet<>();
 
 	@Override
-	public SkriptAddon registerAddon(String name) {
+	public SkriptAddon registerAddon(Class<?> source, String name) {
 		// make sure an addon is not already registered with this name
 		for (SkriptAddon addon : addons) {
 			if (name.equals(addon.name())) {
 				throw new SkriptAPIException(
-					"An addon (provided by '" + addon.getClass().getName() + "') with the name '" + name + "' is already registered"
+					"An addon (provided by '" + addon.source().getName() + "') with the name '" + name + "' is already registered"
 				);
 			}
 		}
 
-		SkriptAddon addon = new SkriptAddonImpl(this, name, null);
+		SkriptAddon addon = new SkriptAddonImpl(this, source, name, null);
 		addons.add(addon);
 		return addon;
 	}
@@ -95,6 +95,11 @@ final class SkriptImpl implements Skript {
 	/*
 	 * SkriptAddon Implementation
 	 */
+
+	@Override
+	public Class<?> source() {
+		return addon.source();
+	}
 
 	@Override
 	public String name() {
@@ -119,13 +124,20 @@ final class SkriptImpl implements Skript {
 	private static final class SkriptAddonImpl implements SkriptAddon {
 
 		private final Skript skript;
+		private final Class<?> source;
 		private final String name;
 		private final Localizer localizer;
 
-		SkriptAddonImpl(Skript skript, String name, @Nullable Localizer localizer) {
+		SkriptAddonImpl(Skript skript, Class<?> source, String name, @Nullable Localizer localizer) {
 			this.skript = skript;
+			this.source = source;
 			this.name = name;
 			this.localizer = localizer == null ? Localizer.of(this) : localizer;
+		}
+
+		@Override
+		public Class<?> source() {
+			return source;
 		}
 
 		@Override
@@ -185,7 +197,7 @@ final class SkriptImpl implements Skript {
 		}
 
 		@Override
-		public SkriptAddon registerAddon(String name) {
+		public SkriptAddon registerAddon(Class<?> source, String name) {
 			throw new UnsupportedOperationException("Cannot register addons using an unmodifiable Skript");
 		}
 
@@ -196,6 +208,11 @@ final class SkriptImpl implements Skript {
 					.map(SkriptAddon::unmodifiableView)
 					.forEach(addons::add);
 			return addons.build();
+		}
+
+		@Override
+		public Class<?> source() {
+			return skript.source();
 		}
 
 		@Override

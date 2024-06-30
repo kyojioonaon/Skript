@@ -496,7 +496,7 @@ public final class Skript extends JavaPlugin implements Listener {
 		}
 
 		// initialize the modern Skript instance
-		skript = org.skriptlang.skript.Skript.of(this.getName());
+		skript = org.skriptlang.skript.Skript.of(getClass(), getName());
 		unmodifiableSkript = skript.unmodifiableView();
 		skript.localizer().setSourceDirectories(
 			getClass(),
@@ -1387,10 +1387,7 @@ public final class Skript extends JavaPlugin implements Listener {
 		Set<SkriptAddon> addons = new HashSet<>(Skript.addons);
 		addons.addAll(instance().addons().stream()
 			.filter(addon -> addons.stream().noneMatch(oldAddon -> oldAddon.name().equals(addon.name())))
-			.flatMap(addon -> {
-				SkriptAddon old = SkriptAddon.fromModern(addon);
-				return old == null ? Stream.empty() : Stream.of(old);
-			})
+			.map(SkriptAddon::fromModern)
 			.collect(Collectors.toSet())
 		);
 		return Collections.unmodifiableCollection(addons);
@@ -1406,7 +1403,6 @@ public final class Skript extends JavaPlugin implements Listener {
 	public static SkriptAddon getAddonInstance() {
 		if (addon == null) {
 			addon = SkriptAddon.fromModern(instance());
-			assert addon != null; // should never be null for Skript
 		}
 		return addon;
 	}

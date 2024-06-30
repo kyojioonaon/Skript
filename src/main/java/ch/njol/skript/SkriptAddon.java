@@ -51,7 +51,7 @@ public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 	 * Package-private constructor. Use {@link Skript#registerAddon(JavaPlugin)} to get a SkriptAddon for your plugin.
 	 */
 	SkriptAddon(JavaPlugin plugin) {
-		this(plugin, Skript.instance().registerAddon(plugin.getName()));
+		this(plugin, Skript.instance().registerAddon(plugin.getClass(), plugin.getName()));
 	}
 
 	SkriptAddon(JavaPlugin plugin, org.skriptlang.skript.addon.SkriptAddon addon) {
@@ -133,14 +133,14 @@ public class SkriptAddon implements org.skriptlang.skript.addon.SkriptAddon {
 	//
 
 	@ApiStatus.Experimental
-	static @Nullable SkriptAddon fromModern(org.skriptlang.skript.addon.SkriptAddon addon) {
-		Class<?> source = addon.localizer().source();
-		if (source != null) // using source would be most accurate
-			return new SkriptAddon(JavaPlugin.getProvidingPlugin(source), addon);
-		Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin(addon.name());
-		if (!(plugin instanceof JavaPlugin))
-			return null;
-		return new SkriptAddon((JavaPlugin) plugin, addon);
+	static SkriptAddon fromModern(org.skriptlang.skript.addon.SkriptAddon addon) {
+		return new SkriptAddon(JavaPlugin.getProvidingPlugin(addon.source()), addon);
+	}
+
+	@Override
+	@ApiStatus.Experimental
+	public Class<?> source() {
+		return addon.source();
 	}
 
 	@Override

@@ -20,6 +20,11 @@ class SkriptAddonImpl {
 		}
 
 		@Override
+		public Class<?> source() {
+			return addon.source();
+		}
+
+		@Override
 		public String name() {
 			return addon.name();
 		}

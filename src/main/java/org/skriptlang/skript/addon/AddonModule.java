@@ -12,7 +12,8 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 public interface AddonModule {
 
 	/**
-	 *
+	 * Used for loading the components (e.g. syntax) of this module.
+	 * Typically triggered through {@link SkriptAddon#loadModules(AddonModule...)}.
 	 * @param addon The addon this module belongs to.
 	 */
 	void load(SkriptAddon addon);
