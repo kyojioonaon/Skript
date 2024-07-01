@@ -198,7 +198,7 @@ public final class Skript extends JavaPlugin implements Listener {
 	@Nullable
 	private static Skript instance = null;
 
-	private static org.skriptlang.skript.@UnknownNullability Skript skript = null;
+	static org.skriptlang.skript.@UnknownNullability Skript skript = null;
 	private static org.skriptlang.skript.@UnknownNullability Skript unmodifiableSkript = null;
 
 	private static boolean disabled = false;
