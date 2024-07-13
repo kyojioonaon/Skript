@@ -18,9 +18,12 @@
  */
 package ch.njol.skript.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import ch.njol.skript.Skript;
+import ch.njol.skript.aliases.ItemType;
+import ch.njol.skript.lang.Literal;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
+import ch.njol.skript.registrations.Classes;
+import ch.njol.skript.variables.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -31,12 +34,8 @@ import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.eclipse.jdt.annotation.Nullable;
 
-import ch.njol.skript.Skript;
-import ch.njol.skript.aliases.ItemType;
-import ch.njol.skript.lang.Literal;
-import ch.njol.skript.lang.SkriptParser.ParseResult;
-import ch.njol.skript.registrations.Classes;
-import ch.njol.skript.variables.Variables;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DisplayData extends EntityData<Display> {
 
@@ -62,7 +61,7 @@ public class DisplayData extends EntityData<Display> {
 		DisplayType(String className, String codeName) {
 			try {
 				this.displaySubClass = (Class<? extends Display>) Class.forName(className);
-			} catch (ClassNotFoundException e) {}
+			} catch (ClassNotFoundException ignored) {}
 			this.codeName = codeName;
 		}
 
@@ -71,14 +70,14 @@ public class DisplayData extends EntityData<Display> {
 			return codeName;
 		}
 
-		public static String[] codeNames;
+		public static final String[] codeNames;
 		static {
-			List<String> cn = new ArrayList<>();
-			for (DisplayType t : values()) {
-				if (t.displaySubClass != null)
-					cn.add(t.codeName);
+			List<String> codeNamesList = new ArrayList<>();
+			for (DisplayType type : values()) {
+				if (type.displaySubClass != null)
+					codeNamesList.add(type.codeName);
 			}
-			codeNames = cn.toArray(new String[0]);
+			codeNames = codeNamesList.toArray(new String[0]);
 		}
 	}
 
@@ -125,29 +124,20 @@ public class DisplayData extends EntityData<Display> {
 	}
 
 	@Override
-	protected boolean init(@Nullable Class<? extends Display> c, @Nullable Display entity) {
+	protected boolean init(@Nullable Class<? extends Display> displayClass, @Nullable Display entity) {
 		DisplayType[] types = DisplayType.values();
 		for (int i = types.length - 1; i >= 0; i--) {
 			Class<?> display = types[i].displaySubClass;
 			if (display == null)
 				continue;
-			if (entity == null ? c.isAssignableFrom(display) : display.isInstance(entity)) {
+			//noinspection ConstantConditions
+			if (entity == null ? displayClass.isAssignableFrom(display) : display.isInstance(entity)) {
 				type = types[i];
 				if (entity != null) {
 					switch (type) {
-						case ANY:
-							break;
-						case BLOCK:
-							blockData = ((BlockDisplay) entity).getBlock();
-							break;
-						case ITEM:
-							item = ((ItemDisplay) entity).getItemStack();
-							break;
-						case TEXT:
-							text = ((TextDisplay) entity).getText();
-							break;
-						default:
-							break;
+						case BLOCK -> blockData = ((BlockDisplay) entity).getBlock();
+						case ITEM -> item = ((ItemDisplay) entity).getItemStack();
+						case TEXT -> text = ((TextDisplay) entity).getText();
 					}
 				}
 				return true;
@@ -160,56 +150,52 @@ public class DisplayData extends EntityData<Display> {
 	@Override
 	public void set(Display entity) {
 		switch (type) {
-			case ANY:
-				break;
-			case BLOCK:
+			case BLOCK -> {
 				if (!(entity instanceof BlockDisplay))
 					return;
 				if (blockData != null)
 					((BlockDisplay) entity).setBlock(blockData);
-				break;
-			case ITEM:
+			}
+			case ITEM -> {
 				if (!(entity instanceof ItemDisplay))
 					return;
 				if (item != null)
 					((ItemDisplay) entity).setItemStack(item);
-				break;
-			case TEXT:
+			}
+			case TEXT -> {
 				if (!(entity instanceof TextDisplay))
 					return;
 				if (text != null)
 					((TextDisplay) entity).setText(text);
-				break;
-			default:
-				break;
+			}
 		}
 	}
 
 	@Override
 	public boolean match(Display entity) {
 		switch (type) {
-			case ANY:
-				break;
-			case BLOCK:
+			case BLOCK -> {
 				if (!(entity instanceof BlockDisplay))
 					return false;
 				if (blockData != null && !((BlockDisplay) entity).getBlock().equals(blockData))
 					return false;
-				break;
-			case ITEM:
+			}
+			case ITEM -> {
 				if (!(entity instanceof ItemDisplay))
 					return false;
 				if (item != null && !((ItemDisplay) entity).getItemStack().isSimilar(item))
 					return false;
-				break;
-			case TEXT:
+			}
+			case TEXT -> {
 				if (!(entity instanceof TextDisplay))
 					return false;
-				if (item != null && !((TextDisplay) entity).getText().equals(text))
+				if (text == null) // all text displays should match a blank one.
+					return true;
+				String displayText = ((TextDisplay) entity).getText();
+				if (displayText == null)
 					return false;
-				break;
-			default:
-				break;
+				return displayText.equals(text);
+			}
 		}
 		return type.displaySubClass != null && type.displaySubClass.isInstance(entity);
 	}
@@ -226,17 +212,16 @@ public class DisplayData extends EntityData<Display> {
 
 	@Override
 	protected boolean equals_i(EntityData<?> obj) {
-		if (!(obj instanceof DisplayData))
-			return false;
-		DisplayData other = (DisplayData) obj;
-		return type == other.type;
+		if (obj instanceof DisplayData other)
+			return type == other.type;
+		return false;
 	}
 
 	@Override
-	public boolean isSupertypeOf(EntityData<?> e) {
-		if (e instanceof DisplayData)
-			return type == DisplayType.ANY || ((DisplayData) e).type == type;
-		return Display.class.isAssignableFrom(e.getType());
+	public boolean isSupertypeOf(EntityData<?> entityData) {
+		if (entityData instanceof DisplayData displayData)
+			return type == DisplayType.ANY || displayData.type == type;
+		return Display.class.isAssignableFrom(entityData.getType());
 	}
 
 	@Override

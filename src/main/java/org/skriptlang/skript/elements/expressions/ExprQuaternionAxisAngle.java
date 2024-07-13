@@ -1,5 +1,6 @@
 package org.skriptlang.skript.elements.expressions;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
@@ -32,7 +33,8 @@ import org.joml.Quaternionf;
 public class ExprQuaternionAxisAngle extends SimplePropertyExpression<Quaternionf, Object> {
 
 	static {
-		register(ExprQuaternionAxisAngle.class, Object.class, "[rotation] (angle|:axis)", "quaternions");
+		if (Skript.isRunningMinecraft(1, 19, 4))
+			register(ExprQuaternionAxisAngle.class, Object.class, "[rotation] (angle|:axis)", "quaternions");
 	}
 
 	boolean isAxis;
