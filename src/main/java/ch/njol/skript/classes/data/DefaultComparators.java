@@ -75,13 +75,20 @@ public class DefaultComparators {
 	static {
 		
 		// Number - Number
-		Comparators.registerComparator(Number.class, Number.class, new Comparator<Number, Number>() {
+		Comparators.registerComparator(Number.class, Number.class, new Comparator<>() {
 			@Override
 			public Relation compare(Number n1, Number n2) {
 				if (n1 instanceof Long && n2 instanceof Long)
 					return Relation.get(n1.longValue() - n2.longValue());
-				Double d1 = n1.doubleValue(),
-					   d2 = n2.doubleValue();
+				@SuppressWarnings("WrapperTypeMayBePrimitive")
+				Double d1, d2;
+				if (n1 instanceof Float || n2 instanceof Float) {
+					d1 = (double) n1.floatValue();
+					d2 = (double) n2.floatValue();
+				} else {
+					d1 = n1.doubleValue();
+					d2 = n2.doubleValue();
+				}
 				if (d1.isNaN() || d2.isNaN()) {
 					return Relation.SMALLER;
 				} else if (d1.isInfinite() || d2.isInfinite()) {

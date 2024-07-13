@@ -668,6 +668,9 @@ public class DefaultFunctions {
 						@Override
 						public Quaternionf[] executeSimple(Object[][] params) {
 							float angle = (float) (((Number) params[0][0]).floatValue() / 180 * Math.PI);
+							Vector v = ((Vector) params[1][0]);
+							if (v.isZero() || !Double.isFinite(v.getX()) || !Double.isFinite(v.getY()) || !Double.isFinite(v.getZ()))
+								return new Quaternionf[0];
 							Vector3f axis = ((Vector) params[1][0]).toVector3f();
 							return CollectionUtils.array(new Quaternionf(new AxisAngle4f(angle, axis)));
 						}

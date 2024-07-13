@@ -21,7 +21,6 @@ package ch.njol.skript.expressions;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.classes.Changer.ChangeMode;
-import ch.njol.skript.classes.Changer.ChangerUtils;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -33,15 +32,12 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
-import org.eclipse.jdt.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.joml.Quaternionf;
 
 import java.util.Locale;
 
-/**
- * Ported by Sashie from skript-vectors with bi0qaw's permission.
- * @author bi0qaw
- */
 @Name("Vector/Quaternion - XYZ Component")
 @Description({
 	"Gets or changes the x, y or z component of <a href='classes.html#vector'>vectors</a>/<a href='classes.html#quaternion'>quaternions</a>.",
@@ -59,7 +55,7 @@ import java.util.Locale;
 	"set z component of {_v} to 3",
 	"send \"%x component of {_v}%, %y component of {_v}%, %z component of {_v}%\""
 })
-@Since("2.2-dev28, INSERT VERSION (Quaternions)")
+@Since("2.2-dev28, INSERT VERSION (quaternions)")
 public class ExprXYZComponent extends SimplePropertyExpression<Object, Number> {
 
 	static {
@@ -76,7 +72,7 @@ public class ExprXYZComponent extends SimplePropertyExpression<Object, Number> {
 		Z;
 	}
 
-	private AXIS axis;
+	private @UnknownNullability AXIS axis;
 
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
@@ -85,117 +81,109 @@ public class ExprXYZComponent extends SimplePropertyExpression<Object, Number> {
 	}
 
 	@Override
-	public Number convert(Object object) {
-		if (object instanceof Vector) {
-			if (axis == AXIS.W)
-				return null;
-			Vector vector = (Vector) object;
-			return axis == AXIS.X ? vector.getX() : (axis == AXIS.Y ? vector.getY() : vector.getZ());
-		} else if (object instanceof Quaternionf) {
-			Quaternionf quaternion = (Quaternionf) object;
-			switch (axis) {
-				case W:
-					return quaternion.w();
-				case X:
-					return quaternion.x();
-				case Y:
-					return quaternion.y();
-				case Z:
-					return quaternion.z();
-				default:
-					return null;
-			}
+	public @Nullable Number convert(Object object) {
+		if (object instanceof Vector vector) {
+			return switch (axis) {
+				case W -> null;
+				case X -> vector.getX();
+				case Y -> vector.getY();
+				case Z -> vector.getZ();
+			};
+		} else if (object instanceof Quaternionf quaternion) {
+			return switch (axis) {
+				case W -> quaternion.w();
+				case X -> quaternion.x();
+				case Y -> quaternion.y();
+				case Z -> quaternion.z();
+			};
 		}
 		return null;
 	}
 
 	@Override
-	public Class<?>[] acceptChange(ChangeMode mode) {
-		if (getExpr().getReturnType().equals(Quaternionf.class)) {
-			if ((mode == ChangeMode.SET || mode == ChangeMode.ADD || mode == ChangeMode.REMOVE))
-				return new Class[] {Number.class};
-		}
+	public Class<?> @Nullable [] acceptChange(ChangeMode mode) {
 		if ((mode == ChangeMode.ADD || mode == ChangeMode.REMOVE || mode == ChangeMode.SET)
-				&& getExpr().isSingle() && Changer.ChangerUtils.acceptsChange(getExpr(), ChangeMode.SET, Vector.class))
+				&& Changer.ChangerUtils.acceptsChange(getExpr(), ChangeMode.SET, Vector.class, Quaternionf.class))
 			return CollectionUtils.array(Number.class);
 		return null;
 	}
 
 	@Override
-	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
-		assert delta != null;
-		for (Object object : getExpr().getArray(event)) {
-			if (object instanceof Vector) {
-				if (axis == AXIS.W)
-					continue;
-				Vector vector = (Vector) object;
-				double value = ((Number) delta[0]).doubleValue();
-				switch (mode) {
-					case REMOVE:
-						value = -value;
-						//$FALL-THROUGH$
-					case ADD:
-						if (axis == AXIS.X) {
-							vector.setX(vector.getX() + value);
-						} else if (axis == AXIS.Y) {
-							vector.setY(vector.getY() + value);
-						} else {
-							vector.setZ(vector.getZ() + value);
-						}
-						getExpr().change(event, new Vector[] {vector}, ChangeMode.SET);
-						break;
-					case SET:
-						if (axis == AXIS.X) {
-							vector.setX(value);
-						} else if (axis == AXIS.Y) {
-							vector.setY(value);
-						} else {
-							vector.setZ(value);
-						}
-						getExpr().change(event, new Vector[] {vector}, ChangeMode.SET);
-						break;
-					default:
-						assert false;
-				}
-			} else if (object instanceof Quaternionf) {
-				float value = ((Number) delta[0]).floatValue();
-				Quaternionf quaternion = (Quaternionf) object;
-				switch (mode) {
-					case REMOVE:
-						value = -value;
-						//$FALL-THROUGH$
-					case ADD:
-						if (axis == AXIS.W) {
-							quaternion.set(quaternion.w() + value, quaternion.x(), quaternion.y(), quaternion.z());
-						} else if (axis == AXIS.X) {
-							quaternion.set(quaternion.w(), quaternion.x() + value, quaternion.y(), quaternion.z());
-						} else if (axis == AXIS.Y) {
-							quaternion.set(quaternion.w(), quaternion.x(), quaternion.y() + value, quaternion.z());
-						} else if (axis == AXIS.Z) {
-							quaternion.set(quaternion.w(), quaternion.x(), quaternion.y(), quaternion.z() + value);
-						}
-						if (ChangerUtils.acceptsChange(getExpr(), ChangeMode.SET, Quaternionf.class))
-							getExpr().change(event, new Quaternionf[] {quaternion}, ChangeMode.SET);
-						break;
-					case SET:
-						if (axis == AXIS.W) {
-							quaternion.set(value, quaternion.x(), quaternion.y(), quaternion.z());
-						} else if (axis == AXIS.X) {
-							quaternion.set(quaternion.w(), value, quaternion.y(), quaternion.z());
-						} else if (axis == AXIS.Y) {
-							quaternion.set(quaternion.w(), quaternion.x(), value, quaternion.z());
-						} else if (axis == AXIS.Z) {
-							quaternion.set(quaternion.w(), quaternion.x(), quaternion.y(), value);
-						}
-						if (ChangerUtils.acceptsChange(getExpr(), ChangeMode.SET, Quaternionf.class))
-							getExpr().change(event, new Quaternionf[] {quaternion}, ChangeMode.SET);
-						break;
-					case DELETE:
-					case REMOVE_ALL:
-					case RESET:
-						assert false;
-				}
+	public void change(Event event, Object @Nullable [] delta, ChangeMode mode) {
+		assert delta != null; // reset/delete not supported
+		Object[] objects = getExpr().getArray(event);
+		double value = ((Number) delta[0]).doubleValue();
+		for (Object object : objects) {
+			if (object instanceof Vector vector) {
+				changeVector(vector, value, mode);
+			} else if (object instanceof Quaternionf quaternion) {
+				changeQuaternion(quaternion, (float) value, mode);
 			}
+		}
+		getExpr().change(event, objects, ChangeMode.SET);
+	}
+
+	/**
+	 * Helper method to modify a single vector's component. Does not call .change().
+	 *
+	 * @param vector the vector to modify
+	 * @param value the value to modify by
+	 * @param mode the change mode to determine the modification type
+	 */
+	private void changeVector(Vector vector, double value, ChangeMode mode) {
+		if (axis == AXIS.W)
+			return;
+		switch (mode) {
+			case REMOVE:
+				value = -value;
+				//$FALL-THROUGH$
+			case ADD:
+				switch (axis) {
+					case X -> vector.setX(vector.getX() + value);
+					case Y -> vector.setY(vector.getY() + value);
+					case Z -> vector.setZ(vector.getZ() + value);
+				}
+				break;
+			case SET:
+				switch (axis) {
+					case X -> vector.setX(value);
+					case Y -> vector.setY(value);
+					case Z -> vector.setZ(value);
+				}
+				break;
+			default:
+				assert false;
+		}
+	}
+
+	/**
+	 * Helper method to modify a single quaternion's component. Does not call .change().
+	 *
+	 * @param quaternion the vector to modify
+	 * @param value the value to modify by
+	 * @param mode the change mode to determine the modification type
+	 */
+	private void changeQuaternion(Quaternionf quaternion, float value, ChangeMode mode) {
+		switch (mode) {
+			case REMOVE:
+				value = -value;
+				//$FALL-THROUGH$
+			case ADD:
+				switch (axis) {
+					case W -> quaternion.set(quaternion.x(), quaternion.y(), quaternion.z(), quaternion.w() + value);
+					case X -> quaternion.set(quaternion.x() + value, quaternion.y(), quaternion.z(), quaternion.w());
+					case Y -> quaternion.set(quaternion.x(), quaternion.y() + value, quaternion.z(), quaternion.w());
+					case Z -> quaternion.set(quaternion.x(), quaternion.y(), quaternion.z() + value, quaternion.w());
+				}
+				break;
+			case SET:
+				switch (axis) {
+					case W -> quaternion.set(quaternion.x(), quaternion.y(), quaternion.z(), value);
+					case X -> quaternion.set(value, quaternion.y(), quaternion.z(), quaternion.w());
+					case Y -> quaternion.set(quaternion.x(), value, quaternion.z(), quaternion.w());
+					case Z -> quaternion.set(quaternion.x(), quaternion.y(), value, quaternion.w());
+				}
+				break;
 		}
 	}
 
