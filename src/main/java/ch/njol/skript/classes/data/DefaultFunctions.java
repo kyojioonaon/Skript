@@ -45,6 +45,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -636,45 +637,46 @@ public class DefaultFunctions {
 				"concat(\"foo \", 100, \" bar\") # foo 100 bar"
 			).since("2.9.0");
 
-		if (Skript.classExists("org.joml.Quaternionf"))
-			Functions.registerFunction(new SimpleJavaFunction<Quaternionf>("quaternion", new Parameter[] {
-					new Parameter<>("w", DefaultClasses.NUMBER, true, null),
-					new Parameter<>("x", DefaultClasses.NUMBER, true, null),
-					new Parameter<>("y", DefaultClasses.NUMBER, true, null),
-					new Parameter<>("z", DefaultClasses.NUMBER, true, null)
-				}, Classes.getExactClassInfo(Quaternionf.class), true) {
-					@Override
-					public Quaternionf[] executeSimple(Object[][] params) {
-						double w = ((Number) params[0][0]).doubleValue();
-						double x = ((Number) params[1][0]).doubleValue();
-						double y = ((Number) params[2][0]).doubleValue();
-						double z = ((Number) params[3][0]).doubleValue();
-						return CollectionUtils.array(new Quaternionf(x, y, z, w));
-					}
-				})
-				.description("Returns a quaternion from the given w, x, y and z parameters.")
-				.examples("quaternion(1, 5.6, 45.21, 10)")
-				.since("INSERT VERSION");
+		// display entities
+		{
+			if (Skript.classExists("org.joml.Quaternionf")) {
+				Functions.registerFunction(new SimpleJavaFunction<>("quaternion", new Parameter[]{
+						new Parameter<>("w", DefaultClasses.NUMBER, true, null),
+						new Parameter<>("x", DefaultClasses.NUMBER, true, null),
+						new Parameter<>("y", DefaultClasses.NUMBER, true, null),
+						new Parameter<>("z", DefaultClasses.NUMBER, true, null)
+					}, Classes.getExactClassInfo(Quaternionf.class), true) {
+						@Override
+						public Quaternionf[] executeSimple(Object[][] params) {
+							double w = ((Number) params[0][0]).doubleValue();
+							double x = ((Number) params[1][0]).doubleValue();
+							double y = ((Number) params[2][0]).doubleValue();
+							double z = ((Number) params[3][0]).doubleValue();
+							return CollectionUtils.array(new Quaternionf(x, y, z, w));
+						}
+					})
+					.description("Returns a quaternion from the given w, x, y and z parameters. ")
+					.examples("quaternion(1, 5.6, 45.21, 10)")
+					.since("INSERT VERSION");
+			}
 
-		if (Skript.classExists("org.joml.AxisAngle4f"))
-			Functions.registerFunction(new SimpleJavaFunction<AxisAngle4f>("axisAngle", new Parameter[] {
-					new Parameter<>("angle", DefaultClasses.NUMBER, true, null),
-					new Parameter<>("x", DefaultClasses.NUMBER, true, null),
-					new Parameter<>("y", DefaultClasses.NUMBER, true, null),
-					new Parameter<>("z", DefaultClasses.NUMBER, true, null)
-				}, Classes.getExactClassInfo(AxisAngle4f.class), true) {
-					@Override
-					public AxisAngle4f[] executeSimple(Object[][] params) {
-						float angle = ((Number) params[0][0]).floatValue();
-						float x = ((Number) params[1][0]).floatValue();
-						float y = ((Number) params[2][0]).floatValue();
-						float z = ((Number) params[3][0]).floatValue();
-						return CollectionUtils.array(new AxisAngle4f(angle, x, y, z));
-					}
-				})
-				.description("Returns an axis angle from the given angle, x, y and z parameters.")
-				.examples("axisangle(90, 50.6, 20.0, 10.0)")
-				.since("INSERT VERSION");
+			if (Skript.classExists("org.joml.AxisAngle4f")) {
+				Functions.registerFunction(new SimpleJavaFunction<>("axisAngle", new Parameter[]{
+						new Parameter<>("angle", DefaultClasses.NUMBER, true, null),
+						new Parameter<>("axis", DefaultClasses.VECTOR, true, null)
+					}, Classes.getExactClassInfo(Quaternionf.class), true) {
+						@Override
+						public Quaternionf[] executeSimple(Object[][] params) {
+							float angle = (float) (((Number) params[0][0]).floatValue() / 180 * Math.PI);
+							Vector3f axis = ((Vector) params[1][0]).toVector3f();
+							return CollectionUtils.array(new Quaternionf(new AxisAngle4f(angle, axis)));
+						}
+					})
+					.description("Returns a quaternion from the given angle (in degrees) and axis (as a vector). This represents a rotation around the given axis by the given angle.")
+					.examples("axisangle(90, (vector from player's facing))")
+					.since("INSERT VERSION");
+			}
+		}// end display entities
 
 	}
 

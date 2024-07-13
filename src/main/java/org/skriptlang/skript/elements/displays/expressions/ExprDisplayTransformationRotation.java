@@ -18,13 +18,6 @@
  */
 package org.skriptlang.skript.elements.displays.expressions;
 
-import org.bukkit.entity.Display;
-import org.bukkit.event.Event;
-import org.bukkit.util.Transformation;
-import org.jetbrains.annotations.Nullable;
-import org.joml.AxisAngle4f;
-import org.joml.Quaternionf;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
@@ -37,6 +30,11 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import org.bukkit.entity.Display;
+import org.bukkit.event.Event;
+import org.bukkit.util.Transformation;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
 
 @Name("Display Transformation Rotation")
 @Description({
@@ -71,24 +69,19 @@ public class ExprDisplayTransformationRotation extends SimplePropertyExpression<
 	@Nullable
 	public Class<?>[] acceptChange(ChangeMode mode) {
 		if (mode == ChangeMode.SET)
-			return CollectionUtils.array(Quaternionf.class, AxisAngle4f.class);
+			return CollectionUtils.array(Quaternionf.class);
 		if (mode == ChangeMode.RESET)
 			return CollectionUtils.array();
 		return null;
 	}
 
 	@Override
-	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
-		Object object = delta[0];
+	public void change(Event event, Object @Nullable [] delta, ChangeMode mode) {
 		Quaternionf quaternion = null;
 		if (mode == ChangeMode.RESET)
 			quaternion = new Quaternionf(1, 0, 0, 0);
 		if (delta != null) {
-			if (object instanceof Quaternionf) {
-				quaternion = (Quaternionf) object;
-			} else if (object instanceof AxisAngle4f) {
-				quaternion = new Quaternionf((AxisAngle4f) object);
-			}
+			quaternion = (Quaternionf) delta[0];
 		}
 		if (quaternion == null)
 			return;
