@@ -80,11 +80,12 @@ public class DefaultComparators {
 			public Relation compare(Number n1, Number n2) {
 				if (n1 instanceof Long && n2 instanceof Long)
 					return Relation.get(n1.longValue() - n2.longValue());
-				@SuppressWarnings("WrapperTypeMayBePrimitive")
-				Double d1, d2;
+				double epsilon = Skript.EPSILON;
+				@SuppressWarnings("WrapperTypeMayBePrimitive") Double d1, d2;
 				if (n1 instanceof Float || n2 instanceof Float) {
 					d1 = (double) n1.floatValue();
 					d2 = (double) n2.floatValue();
+					epsilon = Math.min(d1, d2) * 1e-6; // dynamic epsilon
 				} else {
 					d1 = n1.doubleValue();
 					d2 = n2.doubleValue();
@@ -95,7 +96,7 @@ public class DefaultComparators {
 					return d1 > d2 ? Relation.GREATER : d1 < d2 ? Relation.SMALLER : Relation.EQUAL;
 				} else {
 					double diff = d1 - d2;
-					if (Math.abs(diff) < Skript.EPSILON)
+					if (Math.abs(diff) < epsilon)
 						return Relation.EQUAL;
 					return Relation.get(diff);
 				}
