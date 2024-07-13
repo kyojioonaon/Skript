@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import ch.njol.skript.doc.RequiredPlugins;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -67,7 +68,7 @@ import ch.njol.util.Kleenean;
 	"spawn a block display of a ladder[waterlogged=true] at location above player:",
 		"\tset billboard of event-display to center # allows the display to rotate around the center axis"
 })
-@Since("1.0, 2.6.1 (with section)")
+@Since("1.0, 2.6.1 (with section), 2.8.6 (dropped items)")
 public class EffSecSpawn extends EffectSection {
 
 	public static class SpawnEvent extends Event {
