@@ -619,26 +619,42 @@ public class DefaultFunctions {
 			.examples("isNaN(0) # false", "isNaN(0/0) # true", "isNaN(sqrt(-1)) # true")
 			.since("2.8.0");
 
-<<<<<<< HEAD
+		Functions.registerFunction(new SimpleJavaFunction<String>("concat", new Parameter[] {
+			 new Parameter<>("texts", DefaultClasses.OBJECT, false, null)
+		}, DefaultClasses.STRING, true) {
+			@Override
+			public String[] executeSimple(Object[][] params) {
+				StringBuilder builder = new StringBuilder();
+				for (Object object : params[0]) {
+					builder.append(Classes.toString(object));
+				}
+				return new String[] {builder.toString()};
+			}
+		}).description("Joins the provided texts (and other things) into a single text.")
+			.examples(
+				"concat(\"hello \", \"there\") # hello there",
+				"concat(\"foo \", 100, \" bar\") # foo 100 bar"
+			).since("2.9.0");
+
 		if (Skript.classExists("org.joml.Quaternionf"))
-				Functions.registerFunction(new SimpleJavaFunction<Quaternionf>("quaternion", new Parameter[] {
-						new Parameter<>("w", DefaultClasses.NUMBER, true, null),
-						new Parameter<>("x", DefaultClasses.NUMBER, true, null),
-						new Parameter<>("y", DefaultClasses.NUMBER, true, null),
-						new Parameter<>("z", DefaultClasses.NUMBER, true, null)
-					}, Classes.getExactClassInfo(Quaternionf.class), true) {
-						@Override
-						public Quaternionf[] executeSimple(Object[][] params) {
-							double w = ((Number) params[0][0]).doubleValue();
-							double x = ((Number) params[1][0]).doubleValue();
-							double y = ((Number) params[2][0]).doubleValue();
-							double z = ((Number) params[3][0]).doubleValue();
-							return CollectionUtils.array(new Quaternionf(x, y, z, w));
-						}
-					})
-					.description("Returns a quaternion from the given w, x, y and z parameters.")
-					.examples("quaternion(1, 5.6, 45.21, 10)")
-					.since("INSERT VERSION");
+			Functions.registerFunction(new SimpleJavaFunction<Quaternionf>("quaternion", new Parameter[] {
+					new Parameter<>("w", DefaultClasses.NUMBER, true, null),
+					new Parameter<>("x", DefaultClasses.NUMBER, true, null),
+					new Parameter<>("y", DefaultClasses.NUMBER, true, null),
+					new Parameter<>("z", DefaultClasses.NUMBER, true, null)
+				}, Classes.getExactClassInfo(Quaternionf.class), true) {
+					@Override
+					public Quaternionf[] executeSimple(Object[][] params) {
+						double w = ((Number) params[0][0]).doubleValue();
+						double x = ((Number) params[1][0]).doubleValue();
+						double y = ((Number) params[2][0]).doubleValue();
+						double z = ((Number) params[3][0]).doubleValue();
+						return CollectionUtils.array(new Quaternionf(x, y, z, w));
+					}
+				})
+				.description("Returns a quaternion from the given w, x, y and z parameters.")
+				.examples("quaternion(1, 5.6, 45.21, 10)")
+				.since("INSERT VERSION");
 
 		if (Skript.classExists("org.joml.AxisAngle4f"))
 			Functions.registerFunction(new SimpleJavaFunction<AxisAngle4f>("axisAngle", new Parameter[] {
@@ -659,24 +675,6 @@ public class DefaultFunctions {
 				.description("Returns an axis angle from the given angle, x, y and z parameters.")
 				.examples("axisangle(90, 50.6, 20.0, 10.0)")
 				.since("INSERT VERSION");
-=======
-		Functions.registerFunction(new SimpleJavaFunction<String>("concat", new Parameter[] {
-			 new Parameter<>("texts", DefaultClasses.OBJECT, false, null)
-		}, DefaultClasses.STRING, true) {
-			@Override
-			public String[] executeSimple(Object[][] params) {
-				StringBuilder builder = new StringBuilder();
-				for (Object object : params[0]) {
-					builder.append(Classes.toString(object));
-				}
-				return new String[] {builder.toString()};
-			}
-		}).description("Joins the provided texts (and other things) into a single text.")
-			.examples(
-				"concat(\"hello \", \"there\") # hello there",
-				"concat(\"foo \", 100, \" bar\") # foo 100 bar"
-			).since("2.9.0");
->>>>>>> upstream/dev/feature
 
 	}
 

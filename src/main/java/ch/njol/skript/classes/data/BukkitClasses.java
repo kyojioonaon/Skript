@@ -1530,21 +1530,21 @@ public class BukkitClasses {
 	    if (Skript.classExists("org.bukkit.entity.Display")) {
 				Classes.registerClass(new ClassInfo<>(Display.class, "display")
 						.user("displays?")
-						.name("Display")
-						.description("A text display, block display or item display.")
+						.name("Display Entity")
+						.description("A text, block or item display entity.")
 						.since("INSERT VERSION")
 						.defaultExpression(new EventValueExpression<>(Display.class))
 						.changer(DefaultChangers.nonLivingEntityChanger));
 	
 				Classes.registerClass(new EnumClassInfo<>(Billboard.class, "billboard", "billboards")
 						.user("billboards?")
-						.name("Billboard")
+						.name("Display Billboard")
 						.description("Represents the billboard setting of a display.")
 						.since("INSERT VERSION"));
 	
 				Classes.registerClass(new EnumClassInfo<>(TextAlignment.class, "textalignment", "text alignments")
 						.user("text ?alignments?")
-						.name("Text Alignment")
+						.name("Display Text Alignment")
 						.description("Represents the text alignment setting of a text display.")
 						.since("INSERT VERSION"));
 	
@@ -1553,7 +1553,7 @@ public class BukkitClasses {
 						.name("Item Display Transforms")
 						.description("Represents the transform setting of an item display.")
 						.since("INSERT VERSION"));
-		}
+		} // end displays
 
 	}
 
