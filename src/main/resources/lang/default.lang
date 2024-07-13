@@ -1246,7 +1246,7 @@ entities:
 		pattern: [a] display(|1¦s) [entity]
 	block display:
 		name: block display¦s
-		pattern: [a] block display(|1¦s) [entity] [of %-blockdata%]
+		pattern: [a] block display(|1¦s) [entity] [of %-blockdata/itemtype%]
 	item display:
 		name: item display¦s
 		pattern: item display(|1¦s) [entity] [of %-itemtype%]
