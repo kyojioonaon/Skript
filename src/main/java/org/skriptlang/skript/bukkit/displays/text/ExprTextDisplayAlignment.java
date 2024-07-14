@@ -16,7 +16,7 @@
  *
  * Copyright Peter Güttinger, SkriptLang team and contributors
  */
-package org.skriptlang.skript.elements.displays.text;
+package org.skriptlang.skript.bukkit.displays.text;
 
 import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;

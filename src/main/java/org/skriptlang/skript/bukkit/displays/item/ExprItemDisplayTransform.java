@@ -16,12 +16,12 @@
  *
  * Copyright Peter Güttinger, SkriptLang team and contributors
  */
-package org.skriptlang.skript.elements.displays.item;
+package org.skriptlang.skript.bukkit.displays.item;
 
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.ItemDisplay.ItemDisplayTransform;
 import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import ch.njol.skript.Skript;
@@ -34,59 +34,60 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 
-@Name("Item Display Item")
-@Description("Returns or changes the <a href='classes.html#itemstack'>itemstack</a> of <a href='classes.html#display'>item displays</a>.")
-@Examples("set the display item of the last spawned item display to a diamond sword")
+@Name("Item Display Transform")
+@Description("Returns or changes the <a href='classes.html#itemdisplaytransform'>item display transform</a> of <a href='classes.html#display'>item displays</a>.")
+@Examples("set the item transform of the last spawned item display to fixed # Reset to default")
 @RequiredPlugins("Spigot 1.19.4+")
 @Since("INSERT VERSION")
-public class ExprItemOfItemDisplay extends SimplePropertyExpression<Display, ItemStack> {
+public class ExprItemDisplayTransform extends SimplePropertyExpression<Display, ItemDisplayTransform> {
 
 	static {
 		if (Skript.isRunningMinecraft(1, 19, 4))
-			registerDefault(ExprItemOfItemDisplay.class, ItemStack.class, "display item[stack]", "displays");
+			registerDefault(ExprItemDisplayTransform.class, ItemDisplayTransform.class, "[item] [display] transform", "displays");
 	}
 
 	@Override
 	@Nullable
-	public ItemStack convert(Display display) {
+	public ItemDisplayTransform convert(Display display) {
 		if (!(display instanceof ItemDisplay))
 			return null;
-		return ((ItemDisplay) display).getItemStack();
+		return ((ItemDisplay) display).getItemDisplayTransform();
 	}
 
 	@Nullable
 	public Class<?>[] acceptChange(ChangeMode mode) {
 		switch (mode) {
 			case ADD:
-			case RESET:
 			case REMOVE:
 			case REMOVE_ALL:
 				break;
+			case RESET:
 			case DELETE:
 				return CollectionUtils.array();
 			case SET:
-				return CollectionUtils.array(ItemStack.class);
+				return CollectionUtils.array(ItemDisplayTransform.class);
 		}
 		return null;
 	}
 
 	@Override
 	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
-		ItemStack item = mode == ChangeMode.DELETE ? null : (ItemStack) delta[0];
+		ItemDisplayTransform transform = mode == ChangeMode.SET ? (ItemDisplayTransform) delta[0] : ItemDisplayTransform.FIXED;
 		for (Display display : getExpr().getArray(event)) {
-			if (display instanceof ItemDisplay)
-				((ItemDisplay) display).setItemStack(item);
+			if (!(display instanceof ItemDisplay))
+				continue;
+			((ItemDisplay) display).setItemDisplayTransform(transform);
 		}
 	}
 
 	@Override
-	public Class<? extends ItemStack> getReturnType() {
-		return ItemStack.class;
+	public Class<? extends ItemDisplayTransform> getReturnType() {
+		return ItemDisplayTransform.class;
 	}
 
 	@Override
 	protected String getPropertyName() {
-		return "display item";
+		return "item display transform";
 	}
 
 }

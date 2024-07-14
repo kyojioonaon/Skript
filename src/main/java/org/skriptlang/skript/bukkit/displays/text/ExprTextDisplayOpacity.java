@@ -16,7 +16,7 @@
  *
  * Copyright Peter Güttinger, SkriptLang team and contributors
  */
-package org.skriptlang.skript.elements.displays.text;
+package org.skriptlang.skript.bukkit.displays.text;
 
 import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
@@ -33,47 +33,61 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 
-@Name("Text Display Line Width")
-@Description("Returns or changes the line width of <a href='classes.html#display'>text displays</a>. Default is 200.")
-@Examples("set the line width of the last spawned text display to 300")
+@Name("Text Display Opacity")
+@Description({
+	"Returns or changes the opacity of <a href='classes.html#display'>text displays</a>.",
+	"Values are between -127 and 127. The value of 127 represents it being completely opaque."
+})
+@Examples("set the opacity of the last spawned text display to -1 # Reset")
 @RequiredPlugins("Spigot 1.19.4+")
 @Since("INSERT VERSION")
-public class ExprTextDisplayLineWidth extends SimplePropertyExpression<Display, Integer> {
+public class ExprTextDisplayOpacity extends SimplePropertyExpression<Display, Byte> {
 
 	static {
 		if (Skript.isRunningMinecraft(1, 19, 4))
-			registerDefault(ExprTextDisplayLineWidth.class, Integer.class, "line width", "displays");
+			registerDefault(ExprTextDisplayOpacity.class, Byte.class, "[display] opacity", "displays");
 	}
 
 	@Override
 	@Nullable
-	public Integer convert(Display display) {
+	public Byte convert(Display display) {
 		if (!(display instanceof TextDisplay))
 			return null;
-		return ((TextDisplay) display).getLineWidth();
+		return ((TextDisplay) display).getTextOpacity();
 	}
 
 	@Nullable
 	public Class<?>[] acceptChange(ChangeMode mode) {
-		return CollectionUtils.array(Number.class);
+		switch (mode) {
+			case ADD:
+			case DELETE:
+			case REMOVE:
+			case RESET:
+			case SET:
+				return CollectionUtils.array(Number.class);
+			case REMOVE_ALL:
+			default:
+				return null;
+		}
 	}
 
 	@Override
 	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
 		Display[] displays = getExpr().getArray(event);
-		int change = delta == null ? 200 : ((Number) delta[0]).intValue();
-		change = Math.max(0, change);
+		byte change = delta == null ? -1 : ((Number) delta[0]).byteValue();
+		change = (byte) Math.max(-127, change);
 		switch (mode) {
 			case REMOVE_ALL:
 			case REMOVE:
-				change = -change;
+				change = (byte) -change;
 			case ADD:
 				for (Display display : displays) {
 					if (!(display instanceof TextDisplay))
 						continue;
 					TextDisplay textDisplay = (TextDisplay) display;
-					int value = Math.max(0, textDisplay.getLineWidth() + change);
-					textDisplay.setLineWidth(value);
+					byte value = (byte) Math.min(127, textDisplay.getTextOpacity() + change);
+					value = (byte) Math.max(-127, value);
+					textDisplay.setTextOpacity(value);
 				}
 				break;
 			case DELETE:
@@ -82,20 +96,20 @@ public class ExprTextDisplayLineWidth extends SimplePropertyExpression<Display, 
 				for (Display display : displays) {
 					if (!(display instanceof TextDisplay))
 						continue;
-					((TextDisplay) display).setLineWidth(change);
+					((TextDisplay) display).setTextOpacity(change);
 				}
 				break;
 		}
 	}
 
 	@Override
-	public Class<? extends Integer> getReturnType() {
-		return Integer.class;
+	public Class<? extends Byte> getReturnType() {
+		return Byte.class;
 	}
 
 	@Override
 	protected String getPropertyName() {
-		return "line width";
+		return "opacity";
 	}
 
 }

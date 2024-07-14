@@ -16,7 +16,7 @@
  *
  * Copyright Peter Güttinger, SkriptLang team and contributors
  */
-package org.skriptlang.skript.elements.displays.expressions;
+package org.skriptlang.skript.bukkit.displays.expressions;
 
 import org.bukkit.entity.Display;
 import org.bukkit.event.Event;
@@ -32,81 +32,76 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
-import ch.njol.skript.util.Timespan;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
-@Name("Display Interpolation Delay/Duration")
-@Description({
-	"Returns or changes the interpolation delay/duration of <a href='classes.html#display'>displays</a>.",
-	"Interpolation delay is the amount of ticks before client-side interpolation will commence.",
-	"Setting to 0 seconds will make it immediate."
-})
-@Examples("set interpolation delay of the last spawned text display to 2 ticks")
+@Name("Display Shadow Radius/Strength")
+@Description("Returns or changes the shadow radius/strength of <a href='classes.html#display'>displays</a>.")
+@Examples("set shadow radius of the last spawned text display to 1.75")
 @RequiredPlugins("Spigot 1.19.4+")
 @Since("INSERT VERSION")
-public class ExprDisplayInterpolation extends SimplePropertyExpression<Display, Timespan> {
+public class ExprDisplayShadow extends SimplePropertyExpression<Display, Float> {
 
 	static {
 		if (Skript.isRunningMinecraft(1, 19, 4))
-			registerDefault(ExprDisplayInterpolation.class, Timespan.class, "interpolation (:delay|duration)[s]", "displays");
+			registerDefault(ExprDisplayShadow.class, Float.class, "shadow (:radius|strength)", "displays");
 	}
 
-	private boolean delay;
+	private boolean radius;
 
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
-		delay = parseResult.hasTag("delay");
+		radius = parseResult.hasTag("radius");
 		return super.init(exprs, matchedPattern, isDelayed, parseResult);
 	}
 
 	@Override
 	@Nullable
-	public Timespan convert(Display display) {
-		return Timespan.fromTicks(delay ? display.getInterpolationDelay() : display.getInterpolationDuration());
+	public Float convert(Display display) {
+		return radius ? display.getShadowRadius() : display.getShadowStrength();
 	}
 
 	@Nullable
 	public Class<?>[] acceptChange(ChangeMode mode) {
-		return CollectionUtils.array(Timespan.class, Number.class);
+		return CollectionUtils.array(Number.class);
 	}
 
 	@Override
 	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
 		Display[] displays = getExpr().getArray(event);
-		int ticks = (int) (delta == null ? 0 : (delta[0] instanceof Number ? ((Number) delta[0]).intValue() : ((Timespan) delta[0]).getTicks()));
+		float change = delta == null ? 0F : (int) ((Number) delta[0]).floatValue();
+		change = Math.max(0F, change);
 		switch (mode) {
 			case REMOVE_ALL:
 			case REMOVE:
-				ticks = -ticks;
+				change = -change;
 			case ADD:
 				for (Display display : displays) {
-					if (delay) {
-						int value = Math.max(0, display.getInterpolationDelay() + ticks);
-						display.setInterpolationDelay(value);
+					if (radius) {
+						float value = Math.max(0F, display.getShadowRadius() + change);
+						display.setShadowRadius(value);
 					} else {
-						int value = Math.max(0, display.getInterpolationDuration() + ticks);
-						display.setInterpolationDuration(value);
+						float value = Math.max(0F, display.getShadowStrength() + change);
+						display.setShadowStrength(value);
 					}
 				}
 				break;
 			case DELETE:
 			case RESET:
 				for (Display display : displays) {
-					if (delay) {
-						display.setInterpolationDelay(0);
+					if (radius) {
+						display.setShadowRadius(0F);
 					} else {
-						display.setInterpolationDuration(0);
+						display.setShadowStrength(0F);
 					}
 				}
 				break;
 			case SET:
-				ticks = Math.max(0, ticks);
 				for (Display display : displays) {
-					if (delay) {
-						display.setInterpolationDelay(ticks);
+					if (radius) {
+						display.setShadowRadius(change);
 					} else {
-						display.setInterpolationDuration(ticks);
+						display.setShadowStrength(change);
 					}
 				}
 				break;
@@ -114,13 +109,13 @@ public class ExprDisplayInterpolation extends SimplePropertyExpression<Display, 
 	}
 
 	@Override
-	public Class<? extends Timespan> getReturnType() {
-		return Timespan.class;
+	public Class<? extends Float> getReturnType() {
+		return Float.class;
 	}
 
 	@Override
 	protected String getPropertyName() {
-		return "interpolation " + (delay ? "delay" : "duration");
+		return radius ? "radius" : "strength";
 	}
 
 }

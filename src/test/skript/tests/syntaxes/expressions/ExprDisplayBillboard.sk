@@ -1,0 +1,6 @@
+test "display billboard" when running minecraft "1.19.4":
+
+	spawn a text display at spawn of world "world":
+		set {_e} to entity
+
+	assert billboard of {_e} is

@@ -1,4 +1,4 @@
-package org.skriptlang.skript.elements.expressions;
+package org.skriptlang.skript.bukkit.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;

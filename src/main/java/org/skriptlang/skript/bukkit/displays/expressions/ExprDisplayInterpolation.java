@@ -16,7 +16,7 @@
  *
  * Copyright Peter Güttinger, SkriptLang team and contributors
  */
-package org.skriptlang.skript.elements.displays.expressions;
+package org.skriptlang.skript.bukkit.displays.expressions;
 
 import org.bukkit.entity.Display;
 import org.bukkit.event.Event;
@@ -32,83 +32,81 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
+import ch.njol.skript.util.Timespan;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
-@Name("Display Height/Width")
+@Name("Display Interpolation Delay/Duration")
 @Description({
-	"Returns or changes the height or width of <a href='classes.html#display'>displays</a>.",
-	"The rendering culling bounding box spans horizontally width/2 from entity position, "+
-	"and the part beyond will be culled.",
-	"If set to 0, no culling will occur on both the vertical and horizontal directions. Default is 0.0."
+	"Returns or changes the interpolation delay/duration of <a href='classes.html#display'>displays</a>.",
+	"Interpolation delay is the amount of ticks before client-side interpolation will commence.",
+	"Setting to 0 seconds will make it immediate."
 })
-@Examples("set height of the last spawned text display to 2.5")
+@Examples("set interpolation delay of the last spawned text display to 2 ticks")
 @RequiredPlugins("Spigot 1.19.4+")
 @Since("INSERT VERSION")
-public class ExprDisplayHeightWidth extends SimplePropertyExpression<Display, Float> {
+public class ExprDisplayInterpolation extends SimplePropertyExpression<Display, Timespan> {
 
 	static {
 		if (Skript.isRunningMinecraft(1, 19, 4))
-			registerDefault(ExprDisplayHeightWidth.class, Float.class, "display (:height|width)", "displays");
+			registerDefault(ExprDisplayInterpolation.class, Timespan.class, "interpolation (:delay|duration)[s]", "displays");
 	}
 
-	private boolean height;
+	private boolean delay;
 
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
-		height = parseResult.hasTag("height");
+		delay = parseResult.hasTag("delay");
 		return super.init(exprs, matchedPattern, isDelayed, parseResult);
 	}
 
 	@Override
 	@Nullable
-	public Float convert(Display display) {
-		return height ? display.getDisplayHeight() : display.getDisplayWidth();
+	public Timespan convert(Display display) {
+		return Timespan.fromTicks(delay ? display.getInterpolationDelay() : display.getInterpolationDuration());
 	}
 
 	@Nullable
 	public Class<?>[] acceptChange(ChangeMode mode) {
-		switch (mode) {
-			case ADD:
-			case DELETE:
-			case REMOVE:
-			case RESET:
-			case SET:
-				return CollectionUtils.array(Number.class);
-			case REMOVE_ALL:
-			default:
-				return null;
-		}
+		return CollectionUtils.array(Timespan.class, Number.class);
 	}
 
 	@Override
 	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
 		Display[] displays = getExpr().getArray(event);
-		float change = delta == null ? 0F : ((Number) delta[0]).floatValue();
-		change = Math.max(0F, change);
+		int ticks = (int) (delta == null ? 0 : (delta[0] instanceof Number ? ((Number) delta[0]).intValue() : ((Timespan) delta[0]).getTicks()));
 		switch (mode) {
 			case REMOVE_ALL:
 			case REMOVE:
-				change = -change;
+				ticks = -ticks;
 			case ADD:
 				for (Display display : displays) {
-					if (height) {
-						float value = Math.max(0F, display.getDisplayHeight() + change);
-						display.setDisplayHeight(value);
+					if (delay) {
+						int value = Math.max(0, display.getInterpolationDelay() + ticks);
+						display.setInterpolationDelay(value);
 					} else {
-						float value = Math.max(0F, display.getDisplayWidth() + change);
-						display.setDisplayWidth(value);
+						int value = Math.max(0, display.getInterpolationDuration() + ticks);
+						display.setInterpolationDuration(value);
 					}
 				}
 				break;
 			case DELETE:
 			case RESET:
-			case SET:
 				for (Display display : displays) {
-					if (height) {
-						display.setDisplayHeight(change);
+					if (delay) {
+						display.setInterpolationDelay(0);
 					} else {
-						display.setDisplayWidth(change);
+						display.setInterpolationDuration(0);
+					}
+				}
+				break;
+			case SET:
+				ticks = Math.max(0, ticks);
+				for (Display display : displays) {
+					if (delay) {
+						display.setInterpolationDelay(ticks);
+					} else {
+						display.setInterpolationDuration(ticks);
 					}
 				}
 				break;
@@ -116,13 +114,13 @@ public class ExprDisplayHeightWidth extends SimplePropertyExpression<Display, Fl
 	}
 
 	@Override
-	public Class<? extends Float> getReturnType() {
-		return Float.class;
+	public Class<? extends Timespan> getReturnType() {
+		return Timespan.class;
 	}
 
 	@Override
 	protected String getPropertyName() {
-		return height ? "height" : "width";
+		return "interpolation " + (delay ? "delay" : "duration");
 	}
 
 }

@@ -65,7 +65,7 @@ public class ColorRGB implements Color {
 
 	private static final boolean HAS_ARGB = Skript.methodExists(org.bukkit.Color.class, "getAlpha");
 	/**
-	 * Returns a ColorRGB object from the provided arguments.
+	 * Returns a ColorRGB object from the provided arguments. Versions lower than 1.19 will not support alpha values.
 	 * 
 	 * @param red red value (0 to 255)
 	 * @param green green value (0 to 255)
@@ -77,7 +77,7 @@ public class ColorRGB implements Color {
 	public static ColorRGB fromRGBA(int red, int green, int blue, int alpha) {
 		org.bukkit.Color bukkit;
 		if (HAS_ARGB)
-			bukkit = org.bukkit.Color.fromARGB(alpha, red ,green, blue);
+			bukkit = org.bukkit.Color.fromARGB(alpha, red, green, blue);
 		else
 			bukkit = org.bukkit.Color.fromRGB(red, green, blue);
 
