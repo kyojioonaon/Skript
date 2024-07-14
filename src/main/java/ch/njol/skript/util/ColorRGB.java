@@ -18,6 +18,7 @@
  */
 package ch.njol.skript.util;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Math2;
 import ch.njol.yggdrasil.Fields;
@@ -53,23 +54,6 @@ public class ColorRGB implements Color {
 	}
 
 	/**
-	 * RGBA constructor. Clamps values to between 0 and 255. For internal use. Prefer {@link #fromRGBA(int, int, int, int)}
-	 * @param red
-	 * @param green
-	 * @param blue
-	 * @param alpha
-	 * @see #fromRGBA(int, int, int, int) 
-	 * @see #fromRGB(int, int, int) 
-	 */
-	private ColorRGB(int red, int green, int blue, int alpha) {
-		this(org.bukkit.Color.fromARGB(
-			Math2.fit(0, alpha, 255),
-			Math2.fit(0, red, 255),
-			Math2.fit(0, green, 255),
-			Math2.fit(0, blue, 255)));
-	}
-
-	/**
 	 * Subject to being private in the future. Use {@link #fromBukkitColor(org.bukkit.Color)}
 	 * This is to keep inline with other color classes.
 	 */
@@ -79,6 +63,7 @@ public class ColorRGB implements Color {
 		this.bukkit = bukkit;
 	}
 
+	private static final boolean HAS_ARGB = Skript.methodExists(org.bukkit.Color.class, "getAlpha");
 	/**
 	 * Returns a ColorRGB object from the provided arguments.
 	 * 
@@ -90,7 +75,13 @@ public class ColorRGB implements Color {
 	 */
 	@Contract("_,_,_,_ -> new")
 	public static ColorRGB fromRGBA(int red, int green, int blue, int alpha) {
-		return new ColorRGB(red, green, blue, alpha);
+		org.bukkit.Color bukkit;
+		if (HAS_ARGB)
+			bukkit = org.bukkit.Color.fromARGB(alpha, red ,green, blue);
+		else
+			bukkit = org.bukkit.Color.fromRGB(red, green, blue);
+
+		return new ColorRGB(bukkit);
 	}
 
 	/**
@@ -129,7 +120,7 @@ public class ColorRGB implements Color {
 
 	@Override
 	public String getName() {
-		if (bukkit.getAlpha() != 255)
+		if (HAS_ARGB && bukkit.getAlpha() != 255)
 			return "argb " + bukkit.getAlpha() + ", " + bukkit.getRed() + ", " + bukkit.getGreen() + ", " + bukkit.getBlue();
 		return "rgb " + bukkit.getRed() + ", " + bukkit.getGreen() + ", " + bukkit.getBlue();
 	}

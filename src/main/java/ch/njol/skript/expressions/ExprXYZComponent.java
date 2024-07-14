@@ -58,9 +58,11 @@ import java.util.Locale;
 @Since("2.2-dev28, INSERT VERSION (quaternions)")
 public class ExprXYZComponent extends SimplePropertyExpression<Object, Number> {
 
+	private static final boolean IS_RUNNING_1194 = Skript.isRunningMinecraft(1, 19, 4);
+
 	static {
 		String types = "vectors";
-		if (Skript.isRunningMinecraft(1, 19, 4))
+		if (IS_RUNNING_1194)
 			types += "/quaternions";
 		register(ExprXYZComponent.class, Number.class, "[vector|quaternion] (:w|:x|:y|:z) [component[s]]", types);
 	}
@@ -102,9 +104,15 @@ public class ExprXYZComponent extends SimplePropertyExpression<Object, Number> {
 
 	@Override
 	public Class<?> @Nullable [] acceptChange(ChangeMode mode) {
-		if ((mode == ChangeMode.ADD || mode == ChangeMode.REMOVE || mode == ChangeMode.SET)
-				&& Changer.ChangerUtils.acceptsChange(getExpr(), ChangeMode.SET, Vector.class, Quaternionf.class))
-			return CollectionUtils.array(Number.class);
+		if ((mode == ChangeMode.ADD || mode == ChangeMode.REMOVE || mode == ChangeMode.SET)) {
+			boolean acceptsChange;
+			if (IS_RUNNING_1194)
+				acceptsChange = Changer.ChangerUtils.acceptsChange(getExpr(), ChangeMode.SET, Vector.class, Quaternionf.class);
+			else
+				acceptsChange = Changer.ChangerUtils.acceptsChange(getExpr(), ChangeMode.SET, Vector.class);
+			if (acceptsChange)
+				return CollectionUtils.array(Number.class);
+		}
 		return null;
 	}
 
@@ -113,13 +121,32 @@ public class ExprXYZComponent extends SimplePropertyExpression<Object, Number> {
 		assert delta != null; // reset/delete not supported
 		Object[] objects = getExpr().getArray(event);
 		double value = ((Number) delta[0]).doubleValue();
+
+		boolean hasVectors = false;
+		boolean hasQuaternions = false;
+		boolean hasInvalidInput = false;
+
 		for (Object object : objects) {
 			if (object instanceof Vector vector) {
 				changeVector(vector, value, mode);
+				hasVectors = true;
 			} else if (object instanceof Quaternionf quaternion) {
 				changeQuaternion(quaternion, (float) value, mode);
+				hasQuaternions = true;
+			} else {
+				hasInvalidInput = true;
 			}
 		}
+
+		// don't SET the expression if there were invalid inputs
+		if (hasInvalidInput)
+			return;
+
+		// covers the edge case where an expression can be set to Vector but returns Quaternions, or similar.
+		if (hasVectors && !Changer.ChangerUtils.acceptsChange(getExpr(), ChangeMode.SET, Vector.class))
+			return;
+		if (hasQuaternions && !Changer.ChangerUtils.acceptsChange(getExpr(), ChangeMode.SET, Quaternionf.class))
+			return;
 		getExpr().change(event, objects, ChangeMode.SET);
 	}
 

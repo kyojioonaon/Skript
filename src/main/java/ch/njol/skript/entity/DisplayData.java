@@ -23,6 +23,7 @@ import ch.njol.skript.aliases.ItemType;
 import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.registrations.Classes;
+import ch.njol.skript.util.ColorRGB;
 import ch.njol.skript.variables.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -40,7 +41,7 @@ import java.util.List;
 
 public class DisplayData extends EntityData<Display> {
 
-	public static final Color DEFAULT_BACKGROUND_COLOR = Color.fromARGB(64, 0, 0, 0);
+	public static final Color DEFAULT_BACKGROUND_COLOR = ColorRGB.fromRGBA(0, 0, 0, 64).asBukkitColor();
 
 	static {
 		if (Skript.isRunningMinecraft(1, 19, 4)) {

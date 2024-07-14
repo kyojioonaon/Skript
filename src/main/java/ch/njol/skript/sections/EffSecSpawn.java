@@ -18,18 +18,6 @@
  */
 package ch.njol.skript.sections;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
-
-import ch.njol.skript.doc.RequiredPlugins;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-import org.eclipse.jdt.annotation.Nullable;
-import org.jetbrains.annotations.NotNull;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
@@ -47,6 +35,16 @@ import ch.njol.skript.util.Direction;
 import ch.njol.skript.util.Getter;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 @Name("Spawn")
 @Description({
