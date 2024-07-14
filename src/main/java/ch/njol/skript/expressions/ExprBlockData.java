@@ -18,12 +18,6 @@
  */
 package ch.njol.skript.expressions;
 
-import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.BlockDisplay;
-import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
@@ -32,6 +26,11 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.BlockDisplay;
+import org.bukkit.event.Event;
+import org.jetbrains.annotations.Nullable;
 
 @Name("Block Data")
 @Description({
@@ -52,29 +51,26 @@ public class ExprBlockData extends SimplePropertyExpression<Object, BlockData> {
 			register(ExprBlockData.class, BlockData.class, "block[ ]data", Skript.isRunningMinecraft(1, 19, 4) ? "blocks/displays" : "blocks");
 	}
 
-	@Nullable
 	@Override
-	public BlockData convert(Object object) {
+	public @Nullable BlockData convert(Object object) {
 		if (object instanceof Block)
 			return ((Block) object).getBlockData();
 		if (object instanceof BlockDisplay)
-		        return ((BlockDisplay) object).getBlock();
+			return ((BlockDisplay) object).getBlock();
 		return null;
 		
 	}
 
-	@Nullable
 	@Override
-	public Class<?>[] acceptChange(ChangeMode mode) {
+	public Class<?> @Nullable [] acceptChange(ChangeMode mode) {
 		if (mode == ChangeMode.SET)
 			return CollectionUtils.array(BlockData.class);
 		return null;
 	}
 
 	@Override
-	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
-		if (delta == null)
-			return;
+	public void change(Event event, Object @Nullable [] delta, ChangeMode mode) {
+		assert delta != null; // reset/delete not supported
 		BlockData blockData = ((BlockData) delta[0]);
 		for (Object object : getExpr().getArray(event)) {
 			if (object instanceof Block) {

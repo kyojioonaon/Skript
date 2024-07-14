@@ -25,6 +25,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.variables.Variables;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
@@ -38,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DisplayData extends EntityData<Display> {
+
+	public static final Color DEFAULT_BACKGROUND_COLOR = Color.fromARGB(64, 0, 0, 0);
 
 	static {
 		if (Skript.isRunningMinecraft(1, 19, 4)) {

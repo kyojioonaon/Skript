@@ -24,6 +24,7 @@ import ch.njol.yggdrasil.Fields;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.DyeColor;
 import org.eclipse.jdt.annotation.Nullable;
+import org.jetbrains.annotations.Contract;
 
 import java.io.NotSerializableException;
 import java.io.StreamCorruptedException;
@@ -52,6 +53,23 @@ public class ColorRGB implements Color {
 	}
 
 	/**
+	 * RGBA constructor. Clamps values to between 0 and 255. For internal use. Prefer {@link #fromRGBA(int, int, int, int)}
+	 * @param red
+	 * @param green
+	 * @param blue
+	 * @param alpha
+	 * @see #fromRGBA(int, int, int, int) 
+	 * @see #fromRGB(int, int, int) 
+	 */
+	private ColorRGB(int red, int green, int blue, int alpha) {
+		this(org.bukkit.Color.fromARGB(
+			Math2.fit(0, alpha, 255),
+			Math2.fit(0, red, 255),
+			Math2.fit(0, green, 255),
+			Math2.fit(0, blue, 255)));
+	}
+
+	/**
 	 * Subject to being private in the future. Use {@link #fromBukkitColor(org.bukkit.Color)}
 	 * This is to keep inline with other color classes.
 	 */
@@ -64,21 +82,34 @@ public class ColorRGB implements Color {
 	/**
 	 * Returns a ColorRGB object from the provided arguments.
 	 * 
-	 * @param red
-	 * @param green
-	 * @param blue
+	 * @param red red value (0 to 255)
+	 * @param green green value (0 to 255)
+	 * @param blue blue value (0 to 255)
+	 * @param alpha alpha value (0 to 255)
 	 * @return ColorRGB
 	 */
+	@Contract("_,_,_,_ -> new")
+	public static ColorRGB fromRGBA(int red, int green, int blue, int alpha) {
+		return new ColorRGB(red, green, blue, alpha);
+	}
+
+	/**
+	 * Returns a ColorRGB object from the provided arguments.
+	 *
+	 * @param red red value (0 to 255)
+	 * @param green green value (0 to 255)
+	 * @param blue blue value (0 to 255)
+	 * @return ColorRGB
+	 */
+	@Contract("_,_,_ -> new")
 	public static ColorRGB fromRGB(int red, int green, int blue) {
 		return new ColorRGB(red, green, blue);
 	}
 
 	/**
 	 * Returns a ColorRGB object from a bukkit color.
-	 * 
-	 * @param red
-	 * @param green
-	 * @param blue
+	 *
+	 * @param bukkit the bukkit color to replicate
 	 * @return ColorRGB
 	 */
 	public static ColorRGB fromBukkitColor(org.bukkit.Color bukkit) {
@@ -98,6 +129,8 @@ public class ColorRGB implements Color {
 
 	@Override
 	public String getName() {
+		if (bukkit.getAlpha() != 255)
+			return "argb " + bukkit.getAlpha() + ", " + bukkit.getRed() + ", " + bukkit.getGreen() + ", " + bukkit.getBlue();
 		return "rgb " + bukkit.getRed() + ", " + bukkit.getGreen() + ", " + bukkit.getBlue();
 	}
 
