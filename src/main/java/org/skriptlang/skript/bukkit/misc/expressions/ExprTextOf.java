@@ -16,7 +16,7 @@
  *
  * Copyright Peter Güttinger, SkriptLang team and contributors
  */
-package org.skriptlang.skript.bukkit.expressions;
+package org.skriptlang.skript.bukkit.misc.expressions;
 
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.Event;
