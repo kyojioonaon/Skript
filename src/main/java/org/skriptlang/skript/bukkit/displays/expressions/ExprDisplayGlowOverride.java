@@ -46,7 +46,7 @@ public class ExprDisplayGlowOverride extends SimplePropertyExpression<Display, C
 
 	static {
 		if (Skript.isRunningMinecraft(1, 19, 4))
-			registerDefault(ExprDisplayGlowOverride.class, Color.class, "glow[ing] colo[u]r[s] [override[s]]", "displays");
+			registerDefault(ExprDisplayGlowOverride.class, Color.class, "glow[ing] colo[u]r[s] override[s]", "displays");
 	}
 
 	@Override
@@ -57,15 +57,14 @@ public class ExprDisplayGlowOverride extends SimplePropertyExpression<Display, C
 		return ColorRGB.fromBukkitColor(display.getGlowColorOverride());
 	}
 
-	@Nullable
-	public Class<?>[] acceptChange(ChangeMode mode) {
+	public Class<?> @Nullable [] acceptChange(ChangeMode mode) {
 		if (mode == ChangeMode.SET || mode == ChangeMode.RESET || mode == ChangeMode.DELETE)
 			return CollectionUtils.array(Color.class);
 		return null;
 	}
 
 	@Override
-	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
+	public void change(Event event, Object @Nullable [] delta, ChangeMode mode) {
 		Display[] displays = getExpr().getArray(event);
 		if (mode != ChangeMode.SET) {
 			for (Display display : displays)

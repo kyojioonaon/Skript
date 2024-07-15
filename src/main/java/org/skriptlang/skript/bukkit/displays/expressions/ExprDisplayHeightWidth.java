@@ -38,11 +38,12 @@ import ch.njol.util.coll.CollectionUtils;
 @Name("Display Height/Width")
 @Description({
 	"Returns or changes the height or width of <a href='classes.html#display'>displays</a>.",
-	"The rendering culling bounding box spans horizontally width/2 from entity position, "+
-	"and the part beyond will be culled.",
+	"The rendering culling bounding box spans horizontally width/2 from entity position, " +
+	"which determines the point at which the display will be frustum culled (no longer rendered because the game " +
+	"determines you are no longer able to see it).",
 	"If set to 0, no culling will occur on both the vertical and horizontal directions. Default is 0.0."
 })
-@Examples("set height of the last spawned text display to 2.5")
+@Examples("set display height of the last spawned text display to 2.5")
 @RequiredPlugins("Spigot 1.19.4+")
 @Since("INSERT VERSION")
 public class ExprDisplayHeightWidth extends SimplePropertyExpression<Display, Float> {
@@ -66,28 +67,22 @@ public class ExprDisplayHeightWidth extends SimplePropertyExpression<Display, Fl
 		return height ? display.getDisplayHeight() : display.getDisplayWidth();
 	}
 
-	@Nullable
-	public Class<?>[] acceptChange(ChangeMode mode) {
-		switch (mode) {
-			case ADD:
-			case DELETE:
-			case REMOVE:
-			case RESET:
-			case SET:
-				return CollectionUtils.array(Number.class);
-			case REMOVE_ALL:
-			default:
-				return null;
-		}
+	public Class<?> @Nullable [] acceptChange(ChangeMode mode) {
+		return switch (mode) {
+			case ADD, REMOVE, RESET, SET -> CollectionUtils.array(Number.class);
+			case DELETE, REMOVE_ALL -> null;
+		};
 	}
 
 	@Override
-	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
+	public void change(Event event, Object @Nullable [] delta, ChangeMode mode) {
 		Display[] displays = getExpr().getArray(event);
+
 		float change = delta == null ? 0F : ((Number) delta[0]).floatValue();
-		change = Math.max(0F, change);
+		if (Float.isInfinite(change) || Float.isNaN(change))
+			return;
+
 		switch (mode) {
-			case REMOVE_ALL:
 			case REMOVE:
 				change = -change;
 			case ADD:
@@ -101,9 +96,9 @@ public class ExprDisplayHeightWidth extends SimplePropertyExpression<Display, Fl
 					}
 				}
 				break;
-			case DELETE:
 			case RESET:
 			case SET:
+				change = Math.max(0F, change);
 				for (Display display : displays) {
 					if (height) {
 						display.setDisplayHeight(change);

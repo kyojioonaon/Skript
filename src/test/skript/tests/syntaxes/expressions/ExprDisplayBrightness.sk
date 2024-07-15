@@ -84,3 +84,5 @@ test "display brightness" when running minecraft "1.19.4":
 	assert brightness override of {_e::*} is 5 with "failed adding block light"
 	assert block light level override of {_e::*} is 5 with "failed adding block light"
 	assert sky light override of {_e::*} is 5 with "failed adding block light"
+
+	delete entities within {_e::*}
