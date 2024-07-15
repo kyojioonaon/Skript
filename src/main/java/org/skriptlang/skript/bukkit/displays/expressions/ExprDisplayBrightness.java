@@ -103,7 +103,8 @@ public class ExprDisplayBrightness extends SimpleExpression<Integer> {
 				Brightness brightness = display.getBrightness();
 				if (brightness == null)
 					continue;
-				values.add(brightness.getBlockLight(), brightness.getSkyLight());
+				values.add(brightness.getBlockLight());
+				values.add(brightness.getSkyLight());
 			}
 		}
 		return values.toArray(new Integer[0]);
@@ -117,8 +118,8 @@ public class ExprDisplayBrightness extends SimpleExpression<Integer> {
 			};
 		} else {
 			return switch (mode) {
-				case ADD, SET, REMOVE, REMOVE_ALL -> null;
-				case RESET, DELETE -> CollectionUtils.array(Brightness.class);
+				case ADD, REMOVE, REMOVE_ALL -> null;
+				case SET, RESET, DELETE -> CollectionUtils.array(Number.class);
 			};
 		}
 	}
@@ -161,9 +162,13 @@ public class ExprDisplayBrightness extends SimpleExpression<Integer> {
 					break;
 			}
 		} else {
-			assert mode == ChangeMode.RESET ||  mode == ChangeMode.DELETE;
+			Brightness change = null;
+			if (delta != null) {
+				int value = Math2.fit(0, ((Number) delta[0]).intValue(), 15);
+				change = new Brightness(value, value);
+			}
 			for (Display display : displays.getArray(event))
-				display.setBrightness(null);
+				display.setBrightness(change);
 		}
 	}
 
