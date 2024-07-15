@@ -16,7 +16,7 @@
  *
  * Copyright Peter Güttinger, SkriptLang team and contributors
  */
-package org.skriptlang.skript.lang.util;
+package org.skriptlang.skript.bukkit.util;
 
 import org.bukkit.util.Vector;
 import org.joml.Vector3f;

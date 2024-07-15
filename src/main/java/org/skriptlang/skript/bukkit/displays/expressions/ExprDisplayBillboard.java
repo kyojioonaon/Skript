@@ -46,7 +46,7 @@ public class ExprDisplayBillboard extends SimplePropertyExpression<Display, Bill
 
 	static {
 		if (Skript.isRunningMinecraft(1, 19, 4))
-			registerDefault(ExprDisplayBillboard.class, Billboard.class, "billboard[s]", "displays");
+			registerDefault(ExprDisplayBillboard.class, Billboard.class, "bill[ |-]board[ing] [setting]", "displays");
 	}
 
 	@Override
@@ -55,8 +55,7 @@ public class ExprDisplayBillboard extends SimplePropertyExpression<Display, Bill
 		return display.getBillboard();
 	}
 
-	@Nullable
-	public Class<?>[] acceptChange(ChangeMode mode) {
+	public Class<?> @Nullable [] acceptChange(ChangeMode mode) {
 		switch (mode) {
 			case ADD:
 			case DELETE:
@@ -72,12 +71,13 @@ public class ExprDisplayBillboard extends SimplePropertyExpression<Display, Bill
 	}
 
 	@Override
-	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
+	public void change(Event event, Object @Nullable [] delta, ChangeMode mode) {
 		if (mode == ChangeMode.RESET) {
 			for (Display display : getExpr().getArray(event))
 				display.setBillboard(Billboard.FIXED);
 			return;
 		}
+		assert delta != null;
 		Billboard billboard = (Billboard) delta[0];
 		for (Display display : getExpr().getArray(event))
 			display.setBillboard(billboard);

@@ -37,7 +37,7 @@ import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-import org.skriptlang.skript.lang.util.JomlBukkitUtils;
+import org.skriptlang.skript.bukkit.util.JomlBukkitUtils;
 
 @Name("Display Transformation Scale/Translation")
 @Description("Returns or changes the transformation scale or translation of <a href='classes.html#display'>displays</a>.")

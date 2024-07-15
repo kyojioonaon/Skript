@@ -23,7 +23,7 @@ import org.bukkit.util.Vector;
 import org.eclipse.jdt.annotation.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.skriptlang.skript.lang.util.JomlBukkitUtils;
+import org.skriptlang.skript.bukkit.util.JomlBukkitUtils;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
