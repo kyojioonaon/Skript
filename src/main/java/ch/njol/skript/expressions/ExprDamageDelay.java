@@ -127,7 +127,7 @@ public class ExprDamageDelay extends SimplePropertyExpression<LivingEntity, Time
 
 	@Override
 	protected String getPropertyName() {
-		return "damage delay";
+		return "invulnerability delay";
 	}
 
 }
