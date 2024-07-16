@@ -44,7 +44,7 @@ import ch.njol.util.coll.CollectionUtils;
 @Examples({
 	"on damage of player:",
 		"\tplayer is holding a diamond named \"Damage saviour\"",
-		"\tadd 2 seconds to the damage delay"
+		"\tadd 2 seconds to the invulnerability delay"
 })
 @Since("INSERT VERSION")
 public class ExprDamageDelay extends SimplePropertyExpression<LivingEntity, Timespan> {
