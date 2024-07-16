@@ -22,6 +22,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.Nullable;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -31,11 +32,15 @@ import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.Timespan;
+import ch.njol.skript.util.Timespan.TimePeriod;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 
 @Name("Damage Delay")
-@Description("The time delay before living entities can take damage again.")
+@Description({
+	"The time delay before living entities can take damage again.",
+	"Using 'maximum' keyword will be the maximum duration in which the living entity will not take damage."
+})
 @Examples({
 	"on damage of player:",
 		"\tplayer is holding a diamond named \"Damage saviour\"",
@@ -45,7 +50,8 @@ import ch.njol.util.coll.CollectionUtils;
 public class ExprDamageDelay extends SimplePropertyExpression<LivingEntity, Timespan> {
 
 	static {
-		registerDefault(ExprDamageDelay.class, Timespan.class, "[max:max[imum]] (invulnerability|no damage) (time|delay)", "livingentities");
+		// TODO remove ticks version 2.10
+		registerDefault(ExprDamageDelay.class, Timespan.class, "[max:max[imum]] (invulnerability|no damage) (time|delay|:ticks)", "livingentities");
 	}
 
 	private boolean max;
@@ -53,13 +59,16 @@ public class ExprDamageDelay extends SimplePropertyExpression<LivingEntity, Time
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
 		max = parseResult.hasTag("max");
+		if (parseResult.hasTag("ticks"))
+			Skript.warning("Usage of 'ticks' in 'invulnerability ticks' will be removed in future versions of Skript." + 
+					"Please use 'invulnerability delay' as it reflects a timespan.");
 		return super.init(exprs, matchedPattern, isDelayed, parseResult);
 	}
 
 	@Override
 	@Nullable
 	public Timespan convert(LivingEntity entity) {
-		return Timespan.fromTicks_i(max ? entity.getMaximumNoDamageTicks() : entity.getNoDamageTicks());
+		return new Timespan(TimePeriod.TICK, max ? entity.getMaximumNoDamageTicks() : entity.getNoDamageTicks());
 	}
 
 	@Override
@@ -80,7 +89,7 @@ public class ExprDamageDelay extends SimplePropertyExpression<LivingEntity, Time
 
 	@Override
 	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
-		int ticks = delta != null ? (int) ((Timespan) delta[0]).getTicks_i() : 60; //60 ticks is Minecraft default.
+		int ticks = delta != null ? (int) ((Timespan) delta[0]).getAs(TimePeriod.TICK) : 60; //60 ticks is Minecraft default.
 		LivingEntity[] entities = getExpr().getArray(event);
 		switch (mode) {
 			case RESET:
