@@ -51,7 +51,7 @@ public class ExprDamageDelay extends SimplePropertyExpression<LivingEntity, Time
 
 	static {
 		// TODO remove ticks version 2.10
-		registerDefault(ExprDamageDelay.class, Timespan.class, "[max:max[imum]] (invulnerability|no damage) (time|delay|:ticks)", "livingentities");
+		registerDefault(ExprDamageDelay.class, Timespan.class, "[max:max[imum]] (invulnerability|no damage|ticks:invincibility) (time|delay|:tick[s])", "livingentities");
 	}
 
 	private boolean max;
@@ -60,7 +60,7 @@ public class ExprDamageDelay extends SimplePropertyExpression<LivingEntity, Time
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, ParseResult parseResult) {
 		max = parseResult.hasTag("max");
 		if (parseResult.hasTag("ticks"))
-			Skript.warning("Usage of 'ticks' in 'invulnerability ticks' will be removed in future versions of Skript." + 
+			Skript.warning("Usage of 'ticks' in 'invincibility ticks' will be removed in future versions of Skript." + 
 					"Please use 'invulnerability delay' as it reflects a timespan.");
 		return super.init(exprs, matchedPattern, isDelayed, parseResult);
 	}
