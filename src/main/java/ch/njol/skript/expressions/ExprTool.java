@@ -18,20 +18,6 @@
  */
 package ch.njol.skript.expressions;
 
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
@@ -50,6 +36,20 @@ import ch.njol.skript.util.slot.InventorySlot;
 import ch.njol.skript.util.slot.Slot;
 import ch.njol.util.Kleenean;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.eclipse.jdt.annotation.Nullable;
+
 @Name("Tool/Offhand")
 @Description("The item an entity is holding in their main or off hand.")
 @Examples({
@@ -64,7 +64,8 @@ public class ExprTool extends PropertyExpression<LivingEntity, Slot> {
 	static {
 		Skript.registerExpression(ExprTool.class, Slot.class, ExpressionType.PROPERTY,
 				"[the] ((tool|held item|weapon)|offhand:(off[ ]hand (tool|item))) [of %livingentities%]",
-				"%livingentities%'[s] ((tool|held item|weapon)|1¦(off[ ]hand (tool|item)))");
+				"%livingentities%'[s] ((tool|held item|weapon)|1¦(off[ ]hand (tool|item)))"
+		);
 	}
 
 	private boolean offHand;
@@ -86,49 +87,52 @@ public class ExprTool extends PropertyExpression<LivingEntity, Slot> {
 			public Slot get(LivingEntity entity) {
 				if (!delayed) {
 					if (offHand && event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getWhoClicked().equals(entity) && getTime() == 1) {
+						InventoryClickEvent inventoryClickEvent = (InventoryClickEvent) event;
 						// When a player uses a number key to swap an item from hotbar to offhand. This simplifies the process with future states.
-						if ((((InventoryClickEvent) event).getClick() == ClickType.NUMBER_KEY && ((InventoryClickEvent) event).getSlot() == EquipmentSlot.EquipSlot.OFF_HAND.slotNumber)) {
-							PlayerInventory inventory = ((InventoryClickEvent) event).getWhoClicked().getInventory();
-							return new InventorySlot(inventory, ((InventoryClickEvent) event).getHotbarButton());
-						} else if (((InventoryClickEvent) event).getClick() == ClickType.SWAP_OFFHAND) {
-							PlayerInventory inventory = ((InventoryClickEvent) event).getWhoClicked().getInventory();
-							return new InventorySlot(inventory, ((InventoryClickEvent) event).getSlot());
-						} else if (((InventoryClickEvent) event).getSlot() == EquipmentSlot.EquipSlot.OFF_HAND.slotNumber) {
-							switch (((InventoryClickEvent) event).getAction()) {
+						if (inventoryClickEvent.getClick() == ClickType.NUMBER_KEY && inventoryClickEvent.getSlot() == EquipmentSlot.EquipSlot.OFF_HAND.slotNumber) {
+							PlayerInventory inventory = inventoryClickEvent.getWhoClicked().getInventory();
+							return new InventorySlot(inventory, inventoryClickEvent.getHotbarButton());
+						} else if (inventoryClickEvent.getClick() == ClickType.SWAP_OFFHAND) {
+							PlayerInventory inventory = inventoryClickEvent.getWhoClicked().getInventory();
+							return new InventorySlot(inventory, inventoryClickEvent.getSlot());
+						} else if (inventoryClickEvent.getSlot() == EquipmentSlot.EquipSlot.OFF_HAND.slotNumber) {
+							switch (inventoryClickEvent.getAction()) {
 								case NOTHING: // When you double click to collect to cursor, it's not COLLECT_TO_CURSOR...
 								case PICKUP_ALL:
 								case PICKUP_HALF:
 								case PICKUP_ONE:
 								case PICKUP_SOME:
-									return new InventorySlot(((InventoryClickEvent) event).getClickedInventory(), ((InventoryClickEvent) event).getRawSlot());
+									return new InventorySlot(inventoryClickEvent.getClickedInventory(), inventoryClickEvent.getRawSlot());
 								case PLACE_ALL:
 								case PLACE_ONE:
 								case PLACE_SOME:
 								case SWAP_WITH_CURSOR:
-									return new CursorSlot((Player) ((InventoryClickEvent) event).getWhoClicked());
+									return new CursorSlot((Player) inventoryClickEvent.getWhoClicked());
 								default:
 									break;
 							}
 						}
 						return null;
 					} else if (!offHand && event instanceof PlayerItemHeldEvent && ((PlayerItemHeldEvent) event).getPlayer() == entity) {
-						PlayerInventory inventory = ((PlayerItemHeldEvent) event).getPlayer().getInventory();
-						return new InventorySlot(inventory, getTime() >= 0 ? ((PlayerItemHeldEvent) event).getNewSlot() : ((PlayerItemHeldEvent) event).getPreviousSlot());
+						PlayerItemHeldEvent playerItemHeldEvent = (PlayerItemHeldEvent) event;
+						PlayerInventory inventory = playerItemHeldEvent.getPlayer().getInventory();
+						return new InventorySlot(inventory, getTime() >= 0 ? playerItemHeldEvent.getNewSlot() : playerItemHeldEvent.getPreviousSlot());
 					} else if (event instanceof PlayerBucketEvent && ((PlayerBucketEvent) event).getPlayer() == entity) {
-						PlayerInventory inventory = ((PlayerBucketEvent) event).getPlayer().getInventory();
-						boolean isOffHand = ((PlayerBucketEvent) event).getHand() == org.bukkit.inventory.EquipmentSlot.OFF_HAND || offHand;
+						PlayerBucketEvent playerBucketEvent = (PlayerBucketEvent) event;
+						PlayerInventory inventory = playerBucketEvent.getPlayer().getInventory();
+						boolean isOffHand = playerBucketEvent.getHand() == org.bukkit.inventory.EquipmentSlot.OFF_HAND || offHand;
 						return new InventorySlot(inventory, isOffHand ? EquipmentSlot.EquipSlot.OFF_HAND.slotNumber
-							: ((PlayerBucketEvent) event).getPlayer().getInventory().getHeldItemSlot()) {
+							: playerBucketEvent.getPlayer().getInventory().getHeldItemSlot()) {
 							@Override
 							@Nullable
 							public ItemStack getItem() {
-								return getTime() <= 0 ? super.getItem() : ((PlayerBucketEvent) event).getItemStack();
+								return getTime() <= 0 ? super.getItem() : playerBucketEvent.getItemStack();
 							}
 
 							@Override
 							public void setItem(@Nullable ItemStack item) {
 								if (getTime() >= 0) {
-									((PlayerBucketEvent) event).setItemStack(item);
+									playerBucketEvent.setItemStack(item);
 								} else {
 									super.setItem(item);
 								}
