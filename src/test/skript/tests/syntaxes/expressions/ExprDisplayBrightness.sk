@@ -34,7 +34,7 @@ test "display brightness" when running minecraft "1.19.4":
 	assert sky light override of {_e::*} is 5 with "failed setting sky light"
 
 	set sky light override of {_e::*} to -1
-	assert brightness override of {_e::*} is 5, 0, 5, 0, 5, 0 with "failed setting sky light"
+	assert brightness override of {_e::*} is 5, 0, 5, 0, 5, and 0 with "failed setting sky light"
 	assert block light level override of {_e::*} is 5 with "failed setting sky light"
 	assert sky light override of {_e::*} is 0 with "failed setting sky light"
 
@@ -49,7 +49,7 @@ test "display brightness" when running minecraft "1.19.4":
 	assert sky light override of {_e::*} is 5 with "failed setting sky light"
 
 	remove 10 from sky light override of {_e::*}
-	assert brightness override of {_e::*} is 5, 0, 5, 0, 5, 0 with "failed adding sky light"
+	assert brightness override of {_e::*} is 5, 0, 5, 0, 5, and 0 with "failed adding sky light"
 	assert block light level override of {_e::*} is 5 with "failed adding sky light"
 	assert sky light override of {_e::*} is 0 with "failed adding sky light"
 
@@ -66,17 +66,17 @@ test "display brightness" when running minecraft "1.19.4":
 	assert sky light override of {_e::*} is 5 with "failed setting block light"
 
 	set block light override of {_e::*} to infinity value
-	assert brightness override of {_e::*} is 15, 5, 15, 5, 15, 5 with "failed setting block light"
+	assert brightness override of {_e::*} is 15, 5, 15, 5, 15, and 5 with "failed setting block light"
 	assert block light level override of {_e::*} is 15 with "failed setting block light"
 	assert sky light override of {_e::*} is 5 with "failed setting block light"
 
 	add 5 to block light override of {_e::*}
-	assert brightness override of {_e::*} is 15, 5, 15, 5, 15, 5 with "failed adding block light"
+	assert brightness override of {_e::*} is 15, 5, 15, 5, 15, and 5 with "failed adding block light"
 	assert block light level override of {_e::*} is 15 with "failed adding block light"
 	assert sky light override of {_e::*} is 5 with "failed adding block light"
 
 	set block light override of {_e::*} to {_}
-	assert brightness override of {_e::*} is 15, 5, 15, 5, 15, 5 with "failed setting block light"
+	assert brightness override of {_e::*} is 15, 5, 15, 5, 15, and 5 with "failed setting block light"
 	assert block light level override of {_e::*} is 15 with "failed setting block light"
 	assert sky light override of {_e::*} is 5 with "failed setting block light"
 

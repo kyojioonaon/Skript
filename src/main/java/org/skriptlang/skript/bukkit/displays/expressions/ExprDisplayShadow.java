@@ -61,18 +61,21 @@ public class ExprDisplayShadow extends SimplePropertyExpression<Display, Float> 
 		return radius ? display.getShadowRadius() : display.getShadowStrength();
 	}
 
-	@Nullable
-	public Class<?>[] acceptChange(ChangeMode mode) {
-		return CollectionUtils.array(Number.class);
+	public Class<?> @Nullable [] acceptChange(ChangeMode mode) {
+		return switch (mode) {
+			case ADD, SET, REMOVE -> CollectionUtils.array(Number.class);
+			case RESET -> CollectionUtils.array();
+			case DELETE, REMOVE_ALL -> null;
+		};
 	}
 
 	@Override
-	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
+	public void change(Event event, Object @Nullable [] delta, ChangeMode mode) {
 		Display[] displays = getExpr().getArray(event);
-		float change = delta == null ? 0F : (int) ((Number) delta[0]).floatValue();
-		change = Math.max(0F, change);
+		float change = delta == null ? 0F : ((Number) delta[0]).floatValue();
+		if (Float.isInfinite(change) || Float.isNaN(change))
+			return;
 		switch (mode) {
-			case REMOVE_ALL:
 			case REMOVE:
 				change = -change;
 			case ADD:
@@ -86,17 +89,11 @@ public class ExprDisplayShadow extends SimplePropertyExpression<Display, Float> 
 					}
 				}
 				break;
-			case DELETE:
 			case RESET:
-				for (Display display : displays) {
-					if (radius) {
-						display.setShadowRadius(0F);
-					} else {
-						display.setShadowStrength(0F);
-					}
-				}
-				break;
+				if (!radius)
+					change = 1; // default strength is 1
 			case SET:
+				change = Math.max(0F, change);
 				for (Display display : displays) {
 					if (radius) {
 						display.setShadowRadius(change);

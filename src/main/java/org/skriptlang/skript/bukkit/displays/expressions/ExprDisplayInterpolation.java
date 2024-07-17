@@ -18,10 +18,6 @@
  */
 package org.skriptlang.skript.bukkit.displays.expressions;
 
-import org.bukkit.entity.Display;
-import org.bukkit.event.Event;
-import org.jetbrains.annotations.Nullable;
-
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer.ChangeMode;
 import ch.njol.skript.doc.Description;
@@ -35,12 +31,17 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.Timespan;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import org.bukkit.entity.Display;
+import org.bukkit.event.Event;
+import org.jetbrains.annotations.Nullable;
 
 @Name("Display Interpolation Delay/Duration")
 @Description({
 	"Returns or changes the interpolation delay/duration of <a href='classes.html#display'>displays</a>.",
-	"Interpolation delay is the amount of ticks before client-side interpolation will commence.",
-	"Setting to 0 seconds will make it immediate."
+	"Interpolation duration is the amount of time a display will take to interpolate, or shift, between its current state and a new state.",
+	"Interpolation delay is the amount of ticks before client-side interpolation will commence." +
+	"Setting to 0 seconds will make it immediate.",
+	"Resetting either value will return it to 0."
 })
 @Examples("set interpolation delay of the last spawned text display to 2 ticks")
 @RequiredPlugins("Spigot 1.19.4+")
@@ -63,20 +64,35 @@ public class ExprDisplayInterpolation extends SimplePropertyExpression<Display, 
 	@Override
 	@Nullable
 	public Timespan convert(Display display) {
-		return Timespan.fromTicks(delay ? display.getInterpolationDelay() : display.getInterpolationDuration());
+		return new Timespan(Timespan.TimePeriod.TICK, delay ? display.getInterpolationDelay() : display.getInterpolationDuration());
 	}
 
-	@Nullable
-	public Class<?>[] acceptChange(ChangeMode mode) {
-		return CollectionUtils.array(Timespan.class, Number.class);
+	public Class<?> @Nullable [] acceptChange(ChangeMode mode) {
+		return switch (mode) {
+			case ADD, REMOVE, SET -> CollectionUtils.array(Timespan.class, Number.class);
+			case RESET -> CollectionUtils.array();
+			case DELETE, REMOVE_ALL -> null;
+		};
 	}
 
 	@Override
-	public void change(Event event, @Nullable Object[] delta, ChangeMode mode) {
+	public void change(Event event, Object @Nullable [] delta, ChangeMode mode) {
 		Display[] displays = getExpr().getArray(event);
-		int ticks = (int) (delta == null ? 0 : (delta[0] instanceof Number ? ((Number) delta[0]).intValue() : ((Timespan) delta[0]).getTicks()));
+		int ticks = 0;
+		if (delta != null) {
+			if (delta[0] instanceof Number) {
+				double number = ((Number) delta[0]).doubleValue();
+				if (Double.isInfinite(number) || Double.isNaN(number))
+					return;
+				ticks = (int) number;
+			} else if (delta[0] instanceof Timespan timespan) {
+				ticks = (int) timespan.getTicks(); // TODO: use getAs when fixed
+			} else {
+				assert false;
+			}
+		}
+
 		switch (mode) {
-			case REMOVE_ALL:
 			case REMOVE:
 				ticks = -ticks;
 			case ADD:
@@ -90,16 +106,7 @@ public class ExprDisplayInterpolation extends SimplePropertyExpression<Display, 
 					}
 				}
 				break;
-			case DELETE:
 			case RESET:
-				for (Display display : displays) {
-					if (delay) {
-						display.setInterpolationDelay(0);
-					} else {
-						display.setInterpolationDuration(0);
-					}
-				}
-				break;
 			case SET:
 				ticks = Math.max(0, ticks);
 				for (Display display : displays) {
